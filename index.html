@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ebco — A reference document.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<script src="mega-menu.js" defer></script>
+
+<style>
+  :root {
+    --navy: #092853;
+    --navy-deep: #061a37;
+    --orange: #E87B1E;
+    --orange-hover: #D77C1B;
+    --tint-1: #F9FAFC;
+    --tint-2: #F3FAFF;
+    --white: #FFFFFF;
+    --grey-50: #FAFAFA;
+    --grey-100: #F5F5F5;
+    --grey-300: #EEEEEE;
+    --grey-500: #5B5B5B;
+    --grey-700: #3a3a3a;
+    --border-light: #DDDDDD;
+    --font-display: 'Archivo', system-ui, sans-serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--white);
+    color: var(--navy);
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    font-feature-settings: "tnum" 1;
+  }
+  a { color: inherit; text-decoration: none; transition: color 200ms; }
+  img { display: block; max-width: 100%; }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  ::selection { background: var(--navy); color: var(--white); }
+
+  /* ===== Grid ===== */
+  .grid12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 24px;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 56px;
+  }
+  @media (max-width: 900px) {
+    .grid12 { padding: 0 24px; column-gap: 16px; }
+  }
+
+  /* ===== Type ===== */
+  .ui {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .num-kicker {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .link-orange {
+    color: var(--orange);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .link-orange:hover { color: var(--orange-hover); }
+  .link-orange .arr { display: inline-block; transition: transform 200ms; }
+  .link-orange:hover .arr { transform: translateX(4px); }
+
+  /* ===== Nav ===== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 56px;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--grey-300);
+    display: flex; align-items: center;
+  }
+  .nav-inner {
+    width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 0 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px;
+  }
+  .nav-logo { font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--navy); letter-spacing: -0.02em; display: flex; align-items: center; gap: 4px; }
+  .nav-logo .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orange); margin-bottom: -2px; }
+  .nav-items { display: flex; gap: 28px; }
+  .nav-items a {
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--navy); opacity: 0.85;
+  }
+  .nav-items a:hover { opacity: 1; color: var(--orange); }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+
+  .search-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--grey-300);
+    border-radius: 50px;
+    width: 140px;
+    transition: width 280ms cubic-bezier(0.16,1,0.3,1), border-color 200ms;
+    background: transparent;
+  }
+  .search-pill:focus-within {
+    width: 280px;
+    border-color: var(--orange);
+  }
+  .search-pill input {
+    flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+    font-family: var(--font-body); font-size: 13px; color: var(--navy);
+  }
+  .search-pill input::placeholder { color: var(--grey-500); opacity: .7; }
+  .search-pill svg { color: var(--navy); flex-shrink: 0; }
+  .search-pill:focus-within svg { color: var(--orange); }
+
+  .icon-btn {
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--navy);
+  }
+  .icon-btn:hover { color: var(--orange); }
+
+  .nav-cta {
+    color: var(--navy);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .nav-cta:hover { color: var(--orange); }
+
+  @media (max-width: 1100px) {
+    .nav-items { display: none; }
+  }
+  @media (max-width: 700px) {
+    .nav-inner { padding: 0 24px; }
+    .search-pill { width: 36px; padding: 8px; }
+    .search-pill input { display: none; }
+    .nav-cta-text { display: none; }
+  }
+
+  /* ===== Vertical section rail ===== */
+  .rail {
+    position: fixed;
+    right: 36px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex; flex-direction: column;
+    gap: 22px;
+  }
+  .rail-item {
+    display: flex; align-items: center; gap: 14px;
+    color: var(--navy);
+    opacity: 0.45;
+    transition: opacity 240ms, color 240ms;
+    cursor: pointer;
+    text-align: right;
+    position: relative;
+    justify-content: flex-end;
+  }
+  .rail-item:hover { opacity: 0.85; }
+  .rail-item.is-active { opacity: 1; color: var(--orange); }
+  .rail-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+    width: 18px;
+    text-align: right;
+  }
+  .rail-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    border: 1px solid currentColor;
+    background: transparent;
+    transition: background 240ms, transform 240ms, box-shadow 240ms;
+    flex-shrink: 0;
+  }
+  .rail-item.is-active .rail-dot {
+    background: var(--orange);
+    box-shadow: 0 0 0 4px rgba(232,123,30,0.12);
+  }
+  .rail-label {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 240ms, transform 240ms;
+    white-space: nowrap;
+    position: absolute;
+    right: calc(100% + 14px); /* sit left of the dot+num row, never affect its width */
+    top: 50%;
+    margin-top: -7px; /* visually center to ~14px line height */
+  }
+  .rail-item.is-active .rail-label,
+  .rail-item:hover .rail-label { opacity: 1; transform: translateX(0); }
+
+  @media (max-width: 1100px) { .rail { display: none; } }
+
+  /* ===== Scroll snap container ===== */
+  .snap-wrap {
+    /* IMPORTANT: Don't use scroll-snap on body — breaks nav. Just use intersection observer */
+  }
+
+  /* ===== Section ===== */
+  section.spec {
+    padding: 140px 0;
+    background: var(--white);
+    position: relative;
+  }
+  section.spec.banded { background: var(--tint-1); }
+
+  .sys-row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    column-gap: 24px;
+    align-items: center;
+    position: relative;
+  }
+  /* Ghost number */
+  .ghost-num {
+    position: absolute;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(140px, 18vw, 240px);
+    line-height: 0.85;
+    color: var(--navy);
+    opacity: 0.06;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    z-index: 0;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+  }
+  .sys-image-left .ghost-num { right: 0; bottom: -20px; }
+  .sys-image-right .ghost-num { left: 0; bottom: -20px; }
+
+  .sys-image-left .sys-img-col { grid-column: 1 / span 7; }
+  .sys-image-left .sys-copy-col { grid-column: 9 / span 4; }
+  .sys-image-right .sys-img-col { grid-column: 6 / span 7; order: 2; }
+  .sys-image-right .sys-copy-col { grid-column: 1 / span 4; }
+
+  .sys-img {
+    aspect-ratio: 5 / 4;
+    background: var(--tint-1);
+    position: relative;
+    overflow: hidden;
+  }
+  .sys-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: saturate(0.92);
+  }
+  .sys-img .img-caption {
+    position: absolute;
+    left: 16px; bottom: 14px;
+    font-family: var(--font-display);
+    font-weight: 500; font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--navy); opacity: 0.5;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sys-copy { position: relative; z-index: 1; }
+  .sys-copy .kicker {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: var(--navy);
+    margin-bottom: 28px;
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .sys-copy .kicker::before {
+    content: ''; width: 18px; height: 1px; background: var(--navy); display: inline-block;
+  }
+  .sys-copy h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(36px, 3.8vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--navy);
+    margin-bottom: 28px;
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+  .sys-copy .desc {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--grey-500);
+    margin-bottom: 32px;
+    max-width: 50ch;
+  }
+
+  /* Divider */
+  .hair { width: 100%; height: 1px; background: var(--grey-300); margin: 0 auto; }
+
+  @media (max-width: 1024px) {
+    .sys-row { grid-template-columns: 1fr; column-gap: 0; }
+    .sys-image-left .sys-img-col,
+    .sys-image-right .sys-img-col,
+    .sys-image-left .sys-copy-col,
+    .sys-image-right .sys-copy-col {
+      grid-column: 1 / -1;
+      order: initial;
+    }
+    .sys-image-right .sys-img-col { order: -1; }
+    .sys-copy-col { margin-top: 40px; }
+    .ghost-num { font-size: 120px !important; top: auto; bottom: -10px; }
+    section.spec { padding: 80px 0; }
+  }
+
+  /* ===== Hero (Section 02) ===== */
+  .hero {
+    padding-top: 140px; /* under nav */
+    padding-bottom: 120px;
+  }
+
+  /* ===== Spec strip ===== */
+  .spec-strip {
+    background: var(--navy);
+    color: var(--white);
+    padding: 120px 0;
+  }
+  .spec-strip .grid12 { row-gap: 0; }
+  .spec-strip-head { grid-column: 1 / span 12; margin-bottom: 64px; }
+  .spec-strip-head .kicker {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+  }
+  .spec-strip-head .kicker::before {
+    content: ''; width: 18px; height: 1px; background: rgba(255,255,255,0.55); display: inline-block;
+  }
+  .spec-strip-head h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(28px, 3.2vw, 44px); line-height: 1.1; letter-spacing: -0.015em;
+    color: var(--white);
+    max-width: 22ch;
+  }
+  .spec-cols {
+    grid-column: 1 / span 12;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 48px;
+  }
+  .spec-col {
+    display: flex; flex-direction: column;
+  }
+  .spec-col .lbl {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 18px;
+  }
+  .spec-col .big {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 36px; letter-spacing: -0.01em;
+    color: var(--white);
+    margin-bottom: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .spec-col .desc {
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 14px; line-height: 1.6;
+    color: rgba(255,255,255,0.65);
+    max-width: 30ch;
+  }
+  @media (max-width: 900px) {
+    .spec-cols { grid-template-columns: 1fr; gap: 36px; }
+    .spec-strip { padding: 80px 0; }
+  }
+
+  /* ===== Catalogue request ===== */
+  .cat-req {
+    padding: 160px 0;
+    background: var(--white);
+    text-align: left;
+  }
+  .cat-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  .cat-thumb-wrap {
+    margin-bottom: 56px;
+    display: flex; justify-content: center;
+  }
+  .cat-thumb {
+    width: 200px; height: 280px;
+    background: var(--navy);
+    box-shadow: 0 30px 60px -30px rgba(9,40,83,0.35);
+    position: relative;
+    overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 22px;
+    color: var(--white);
+  }
+  .cat-thumb::after {
+    content: ''; position: absolute;
+    left: 12px; top: 0; bottom: 0; width: 2px;
+    background: rgba(255,255,255,0.08);
+  }
+  .cat-thumb .tt-top { font-family: var(--font-display); font-weight: 500; font-size: 9px; letter-spacing: 0.18em; opacity: 0.6; }
+  .cat-thumb .tt-mid { font-family: var(--font-display); font-weight: 700; font-size: 22px; line-height: 1.05; letter-spacing: -0.01em; }
+  .cat-thumb .tt-bot { font-family: var(--font-display); font-weight: 400; font-size: 10px; letter-spacing: 0.12em; opacity: 0.55; }
+  .cat-thumb .tt-rule { width: 36px; height: 1px; background: var(--orange); margin: 8px 0; }
+
+  .cat-req h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(28px, 3vw, 44px); line-height: 1.1; letter-spacing: -0.02em;
+    color: var(--navy);
+    text-align: left;
+    margin-bottom: 18px;
+    max-width: 18ch;
+  }
+  .cat-req p.lead {
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 16px; line-height: 1.65; color: var(--grey-500);
+    max-width: 56ch;
+    margin-bottom: 40px;
+  }
+  .req-form {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px;
+    border: 1px solid var(--grey-300);
+    border-radius: 50px;
+    background: var(--white);
+    transition: border-color 200ms;
+    margin-bottom: 18px;
+  }
+  .req-form:focus-within { border-color: var(--orange); }
+  .req-form input {
+    flex: 1; border: none; outline: none; background: transparent;
+    padding: 14px 22px; font-family: var(--font-body); font-size: 15px;
+    color: var(--navy);
+  }
+  .req-form input::placeholder { color: var(--grey-500); }
+  .req-cta {
+    background: var(--orange); color: var(--white);
+    padding: 14px 26px; border-radius: 50px;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: background 200ms;
+  }
+  .req-cta:hover { background: var(--orange-hover); }
+  .req-fine { font-size: 12px; color: var(--grey-500); }
+
+  @media (max-width: 600px) {
+    .cat-req { padding: 80px 0; }
+    .req-form { flex-direction: column; border-radius: 18px; padding: 10px; }
+    .req-form input { width: 100%; text-align: center; }
+    .req-cta { width: 100%; justify-content: center; display: flex; }
+  }
+
+  /* ===== Footer ===== */
+  footer.f {
+    background: var(--grey-100);
+    color: var(--navy);
+    padding: 96px 0 32px;
+  }
+  .f-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(4, 1fr);
+    gap: 48px;
+    margin-bottom: 80px;
+  }
+  .f-brand .logo { font-family: var(--font-display); font-weight: 800; font-size: 28px; color: var(--navy); letter-spacing: -0.02em; }
+  .f-brand .logo .dot { color: var(--orange); }
+  .f-brand p { margin-top: 18px; font-size: 13px; color: var(--grey-500); line-height: 1.7; max-width: 28ch; }
+  .f-col h4 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--navy); margin-bottom: 20px;
+  }
+  .f-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .f-col a { font-size: 13px; color: var(--grey-500); font-weight: 300; }
+  .f-col a:hover { color: var(--orange); }
+  .f-base {
+    border-top: 1px solid var(--border-light);
+    padding-top: 26px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 11px; color: var(--grey-500);
+    letter-spacing: 0.06em;
+  }
+  .f-base .certs { display: flex; gap: 22px; flex-wrap: wrap; font-family: var(--font-display); font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; font-size: 10px; }
+  .f-base .legal { display: flex; gap: 18px; }
+  .f-base a:hover { color: var(--orange); }
+  @media (max-width: 900px) {
+    .f-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+  @media (max-width: 540px) {
+    .f-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">ebco<span class="dot"></span></a>
+    <nav class="nav-items">
+      <a href="#sec-1">Solutions</a>
+      <a href="#">Catalogues</a>
+      <a href="Find a Centre.html">Discovery Centres</a>
+      <a href="#">Trade</a>
+      <a href="#">Support</a>
+    </nav>
+    <div class="nav-right">
+      <label class="search-pill" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+        </svg>
+        <input type="search" placeholder="Search the catalogue" />
+      </label>
+      <button class="icon-btn" aria-label="Cart">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M3 5h2l2.5 11.5a2 2 0 0 0 2 1.5h8.5a2 2 0 0 0 2-1.5L22 8H6" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="10" cy="21" r="1.2" fill="currentColor" stroke="none"></circle>
+          <circle cx="18" cy="21" r="1.2" fill="currentColor" stroke="none"></circle>
+        </svg>
+      </button>
+      <a href="Find a Centre.html" class="nav-cta"><span class="nav-cta-text">Find a centre</span> →</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ RAIL ============ -->
+<aside class="rail" id="rail">
+  <a class="rail-item" data-target="sec-1"><span class="rail-label">Drawer Systems</span><span class="rail-dot"></span><span class="rail-num">01</span></a>
+  <a class="rail-item" data-target="sec-2"><span class="rail-label">Hinges</span><span class="rail-dot"></span><span class="rail-num">02</span></a>
+  <a class="rail-item" data-target="sec-3"><span class="rail-label">Kitchen Systems</span><span class="rail-dot"></span><span class="rail-num">03</span></a>
+  <a class="rail-item" data-target="sec-4"><span class="rail-label">Wardrobe</span><span class="rail-dot"></span><span class="rail-num">04</span></a>
+  <a class="rail-item" data-target="sec-5"><span class="rail-label">Lighting</span><span class="rail-dot"></span><span class="rail-num">05</span></a>
+  <a class="rail-item" data-target="sec-6"><span class="rail-label">Locks</span><span class="rail-dot"></span><span class="rail-num">06</span></a>
+  <a class="rail-item" data-target="sec-7"><span class="rail-label">Catalogue</span><span class="rail-dot"></span><span class="rail-num">07</span></a>
+</aside>
+
+<main>
+
+<!-- ============ 01. HERO / DRAWER SYSTEMS ============ -->
+<section class="spec hero" id="sec-1" data-screen-label="01 Drawer Systems">
+  <div class="grid12 sys-row sys-image-left">
+    <div class="ghost-num">01</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600&q=85&auto=format&fit=crop" alt="Open soft-close drawer at three-quarter view" loading="eager" />
+        <div class="img-caption">Fig. 01 — Quadro 30kg, half-extension at rest</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">01 / Drawer Systems</div>
+        <h2>Movement, refined to silence.</h2>
+        <p class="desc">A drawer slide engineered to vanish. Synchronised damping closes 90mm of travel in under 1.4 seconds. Rated for 30kg dynamic load, tested to 80,000 cycles.</p>
+        <a href="PLP - Power User.html" class="link-orange">Explore the system <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grid12"><div class="hair" style="grid-column: 1 / -1;"></div></div>
+
+<!-- ============ 02. HINGES ============ -->
+<section class="spec banded" id="sec-2" data-screen-label="02 Hinges">
+  <div class="grid12 sys-row sys-image-right">
+    <div class="ghost-num">02</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1600&q=85&auto=format&fit=crop" alt="Concealed hinge inside cabinet" />
+        <div class="img-caption">Fig. 02 — Sensio 165° concealed, integrated damper</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">02 / Hinges</div>
+        <h2>Concealed. Calibrated. Quiet.</h2>
+        <p class="desc">Three-dimensional adjustment built into a 35mm cup. Opening angles from 110° to 170°. Integrated damping or unsprung clip-on variants. Specified to outlast the cabinet.</p>
+        <a href="PLP - Power User.html" class="link-orange">Specifications <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03. KITCHEN SYSTEMS ============ -->
+<section class="spec" id="sec-3" data-screen-label="03 Kitchen Systems">
+  <div class="grid12 sys-row sys-image-left">
+    <div class="ghost-num">03</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&q=85&auto=format&fit=crop" alt="Pull-out kitchen larder" />
+        <div class="img-caption">Fig. 03 — Magic Corner Pro, 90° pivot</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">03 / Kitchen Systems</div>
+        <h2>The corner, reclaimed.</h2>
+        <p class="desc">Swing-out twin-tray mechanisms, full-extension larder pull-outs, segregated waste systems. 40kg load capacity. Engineered in Pune, tested in Stuttgart.</p>
+        <a href="PLP - Power User.html" class="link-orange">Browse systems <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 04. WARDROBE ============ -->
+<section class="spec banded" id="sec-4" data-screen-label="04 Wardrobe">
+  <div class="grid12 sys-row sys-image-right">
+    <div class="ghost-num">04</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1600&q=85&auto=format&fit=crop" alt="Walk-in wardrobe interior" />
+        <div class="img-caption">Fig. 04 — Interio modular interior, oak veneer</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">04 / Wardrobe</div>
+        <h2>An interior, considered.</h2>
+        <p class="desc">A modular system of soft-touch wardrobe accessories — pull-out racks, jewellery drawers, LED-lit valets — colour-matched to seven board finishes. Specified by the millimetre.</p>
+        <a href="PLP - Power User.html" class="link-orange">View the system <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05. LIGHTING ============ -->
+<section class="spec" id="sec-5" data-screen-label="05 Lighting">
+  <div class="grid12 sys-row sys-image-left">
+    <div class="ghost-num">05</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&q=85&auto=format&fit=crop" alt="LED lighting inside cabinet" />
+        <div class="img-caption">Fig. 05 — Aurora recessed profile, 3000K</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">05 / Lighting</div>
+        <h2>Light, where it's needed.</h2>
+        <p class="desc">Sensor-driven interior lighting. 2700K — 4000K colour tuning. IR proximity activation. Recessed and surface-mount profiles, in wired or wireless configurations.</p>
+        <a href="PLP - Power User.html" class="link-orange">Photometric data <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 06. LOCKS ============ -->
+<section class="spec banded" id="sec-6" data-screen-label="06 Locks">
+  <div class="grid12 sys-row sys-image-right">
+    <div class="ghost-num">06</div>
+    <div class="sys-img-col">
+      <div class="sys-img">
+        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85&auto=format&fit=crop" alt="Brushed steel cam lock" />
+        <div class="img-caption">Fig. 06 — Cam lock 16mm, brushed nickel</div>
+      </div>
+    </div>
+    <div class="sys-copy-col">
+      <div class="sys-copy">
+        <div class="kicker">06 / Locks &amp; Security</div>
+        <h2>Closed, with intent.</h2>
+        <p class="desc">Cam locks, drawer locks, push locks, and smart access. Master-keyed or independent. Brushed nickel, satin chrome, or matt black, drawn from a single hardware language.</p>
+        <a href="PLP - Power User.html" class="link-orange">Hardware finishes <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="grid12"><div class="hair" style="grid-column: 1 / -1;"></div></div>
+
+<!-- ============ SPEC STRIP ============ -->
+<section class="spec-strip" data-screen-label="07 Specification">
+  <div class="grid12">
+    <div class="spec-strip-head">
+      <div class="kicker">Engineering, on record</div>
+      <h2>The numbers that sit behind every Ebco specification.</h2>
+    </div>
+    <div class="spec-cols">
+      <div class="spec-col">
+        <div class="lbl">Cycle Life</div>
+        <div class="big">80,000</div>
+        <div class="desc">Drawer slides and hinges tested to a minimum of 80,000 open-close cycles before specification release.</div>
+      </div>
+      <div class="spec-col">
+        <div class="lbl">Load Rating</div>
+        <div class="big">30 — 70 kg</div>
+        <div class="desc">Dynamic load range across the Quadro and Magic series, validated against EN 15338 to category H3.</div>
+      </div>
+      <div class="spec-col">
+        <div class="lbl">Finish Options</div>
+        <div class="big">7</div>
+        <div class="desc">Hardware finishes drawn from a single design language: brushed nickel, satin chrome, matt black, and four warm metallics.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATALOGUE REQUEST ============ -->
+<section class="cat-req" id="sec-7" data-screen-label="08 Catalogue Request">
+  <div class="cat-inner">
+    <div class="cat-thumb-wrap">
+      <div class="cat-thumb" aria-hidden="true">
+        <div>
+          <div class="tt-top">EBCO — 2026</div>
+          <div class="tt-rule"></div>
+          <div class="tt-mid">A Reference<br/>for Engineered<br/>Fittings.</div>
+        </div>
+        <div class="tt-bot">312 PP · VOL. 17</div>
+      </div>
+    </div>
+    <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+      <div class="kicker" style="font-family:var(--font-display); font-weight:400; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--navy); margin-bottom: 20px; opacity:.6;">— THE CATALOGUE</div>
+      <h2 style="text-align:center; margin-left:auto; margin-right:auto;">The catalogue is a 312-page reference.</h2>
+      <p class="lead" style="text-align:center; margin-left:auto; margin-right:auto;">Every system, every dimension, every certification. Posted to your studio at no cost, or downloadable as a PDF for archive.</p>
+    </div>
+    <form class="req-form" onsubmit="event.preventDefault(); this.querySelector('.req-cta').textContent='✓ Requested';">
+      <input type="email" required placeholder="your@studio.com" aria-label="Email" />
+      <button class="req-cta" type="submit">Request</button>
+    </form>
+    <p class="req-fine" style="text-align:center;">We post once. We do not send promotional mail.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="f" data-screen-label="09 Footer">
+  <div class="grid12">
+    <div style="grid-column: 1 / -1;">
+      <div class="f-grid">
+        <div class="f-brand">
+          <div class="logo">ebco<span class="dot">.</span></div>
+          <p>Engineered fittings, manufactured in Pune since 1979. Specified in 142 cities across 9 countries.</p>
+        </div>
+        <div class="f-col">
+          <h4>Solutions</h4>
+          <ul>
+            <li><a href="#sec-1">Drawer Systems</a></li>
+            <li><a href="#sec-2">Hinges</a></li>
+            <li><a href="#sec-3">Kitchen</a></li>
+            <li><a href="#sec-4">Wardrobe</a></li>
+            <li><a href="#sec-5">Lighting</a></li>
+            <li><a href="#sec-6">Locks</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4>Professionals</h4>
+          <ul>
+            <li><a href="#">Trade Program</a></li>
+            <li><a href="#">BIM &amp; CAD</a></li>
+            <li><a href="#">Catalogues</a></li>
+            <li><a href="#">Samples</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Centres</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Warranty</a></li>
+            <li><a href="#">Service</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="f-base">
+        <div class="certs">
+          <span>ISO 9001:2015</span>
+          <span>BIFMA Tested</span>
+          <span>BIS Approved</span>
+          <span>GreenPro</span>
+          <span>EN 15338</span>
+        </div>
+        <div class="legal">
+          <span>© 2026 Ebco Pvt. Ltd.</span>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Section rail — track current section via IntersectionObserver
+  (function(){
+    var items = document.querySelectorAll('.rail-item');
+    var sections = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7']
+      .map(function(id){ return document.getElementById(id); }).filter(Boolean);
+
+    function setActive(id){
+      items.forEach(function(el){
+        el.classList.toggle('is-active', el.dataset.target === id);
+      });
+    }
+
+    // Click → smooth scroll
+    items.forEach(function(el){
+      el.addEventListener('click', function(e){
+        e.preventDefault();
+        var t = document.getElementById(el.dataset.target);
+        if (t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    });
+
+    // IntersectionObserver
+    var io = new IntersectionObserver(function(entries){
+      // Pick the entry with highest intersection ratio above a threshold
+      var best = null;
+      entries.forEach(function(e){
+        if (e.isIntersecting && (!best || e.intersectionRatio > best.intersectionRatio)) {
+          best = e;
+        }
+      });
+      if (best) setActive(best.target.id);
+    }, { rootMargin: '-40% 0px -40% 0px', threshold: [0, 0.25, 0.5, 0.75] });
+
+    sections.forEach(function(s){ io.observe(s); });
+
+    // Set initial
+    setActive('sec-1');
+  })();
+</script>
+
+</body>
+</html>

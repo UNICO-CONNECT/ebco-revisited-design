@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Drawer Slides — Ebco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="catalogue.css" />
+<script src="mega-menu.js" defer></script>
+
+<style>
+  /* ============ PLP-specific ============ */
+
+  /* Category hero strip */
+  .cat-hero {
+    height: 280px;
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(9,18,40,0.45) 0%, rgba(9,18,40,0.65) 60%, rgba(9,18,40,0.85) 100%),
+      url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=2400&q=85&auto=format&fit=crop') center 60%/cover no-repeat;
+    color: var(--white);
+    overflow: hidden;
+  }
+  .cat-hero-inner {
+    position: relative;
+    width: 100%; max-width: 1440px; margin: 0 auto;
+    padding: 36px 48px 32px;
+    height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .breadcrumb {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.78);
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .breadcrumb a:hover { color: var(--white); }
+  .breadcrumb .sep { opacity: 0.55; }
+  .breadcrumb .current { color: var(--white); }
+
+  .cat-hero h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(36px, 5vw, 64px); line-height: 1.02;
+    letter-spacing: -0.02em; color: var(--white);
+    margin-top: 14px;
+  }
+  .cat-hero .manifesto {
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 17px; line-height: 1.5;
+    color: rgba(255,255,255,0.86);
+    margin-top: 14px;
+    max-width: 52ch;
+  }
+  .cat-hero .count-chip {
+    position: absolute; left: 48px; bottom: 24px;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.82);
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 8px 16px; border: 1px solid rgba(255,255,255,0.32);
+    border-radius: 50px;
+    backdrop-filter: blur(4px);
+  }
+  .cat-hero .count-chip .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--orange);
+  }
+  @media (max-width: 900px) {
+    .cat-hero-inner { padding: 24px 22px; }
+    .cat-hero .count-chip { left: 22px; bottom: 20px; }
+  }
+
+  /* ============ Working area ============ */
+  .work {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 56px;
+    max-width: 1440px; margin: 0 auto;
+    padding: 56px 48px 96px;
+  }
+  @media (max-width: 1100px) {
+    .work { grid-template-columns: 1fr; gap: 32px; padding: 32px 22px 80px; }
+    .filters { position: relative !important; top: auto !important; max-height: none !important; }
+  }
+
+  /* ============ Filter rail ============ */
+  .filters {
+    position: sticky; top: 80px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding-right: 8px;
+  }
+  .filters::-webkit-scrollbar { width: 4px; }
+  .filters::-webkit-scrollbar-thumb { background: var(--grey-200); border-radius: 2px; }
+  .filters-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--grey-200);
+  }
+  .filters-head .ttl {
+    font-family: var(--font-display); font-weight: 600; font-size: 13px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy);
+  }
+  .filters-head .reset {
+    color: var(--orange); font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer;
+  }
+  .filters-head .reset:hover { color: var(--orange-hover); }
+
+  /* Active chips */
+  .active-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-bottom: 26px;
+    min-height: 0;
+  }
+  .active-chips:empty { display: none; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px 6px 10px;
+    border: 1px solid var(--grey-200);
+    border-radius: 50px;
+    background: var(--white);
+    font-family: var(--font-display); font-weight: 500; font-size: 11px;
+    letter-spacing: 0.04em; color: var(--navy);
+    cursor: default;
+  }
+  .chip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--orange); flex-shrink: 0; }
+  .chip .x { cursor: pointer; opacity: 0.5; font-size: 14px; line-height: 1; padding: 0 2px; }
+  .chip .x:hover { opacity: 1; color: var(--orange); }
+
+  /* Filter group */
+  .f-group { margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px solid var(--grey-200); }
+  .f-group:last-child { border-bottom: none; }
+  .f-group-head {
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+    margin-bottom: 14px;
+  }
+  .f-group-head .lbl {
+    font-family: var(--font-display); font-weight: 600; font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--navy);
+  }
+  .f-group-head .toggle {
+    color: var(--navy); transition: transform 240ms;
+  }
+  .f-group.collapsed .f-group-body { display: none; }
+  .f-group.collapsed .f-group-head .toggle { transform: rotate(-90deg); }
+
+  .f-group-body { display: flex; flex-direction: column; gap: 10px; }
+  .f-check {
+    display: flex; align-items: center; gap: 12px; cursor: pointer;
+    font-family: var(--font-body); font-weight: 400; font-size: 13px;
+    color: var(--grey-700);
+    transition: color 200ms;
+  }
+  .f-check:hover { color: var(--navy); }
+  .f-check input[type="checkbox"] { display: none; }
+  .f-check .box {
+    width: 14px; height: 14px; border: 1px solid var(--grey-300);
+    border-radius: 2px; display: inline-flex; align-items: center; justify-content: center;
+    transition: all 180ms;
+    flex-shrink: 0;
+  }
+  .f-check .box::after {
+    content: ''; width: 6px; height: 6px; background: var(--orange);
+    transform: scale(0); transition: transform 180ms;
+    border-radius: 1px;
+  }
+  .f-check input:checked + .box { border-color: var(--orange); }
+  .f-check input:checked + .box::after { transform: scale(1); }
+  .f-check input:checked ~ .lbl-text { color: var(--navy); font-weight: 500; }
+  .f-check .lbl-text { flex: 1; }
+  .f-check .qty { color: var(--grey-500); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  /* Range filter */
+  .f-range {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 6px;
+  }
+  .f-range input[type="number"] {
+    width: 70px; padding: 8px 10px; border: 1px solid var(--grey-300);
+    border-radius: 4px; font-size: 12px; color: var(--navy);
+    -moz-appearance: textfield;
+  }
+  .f-range input::-webkit-outer-spin-button,
+  .f-range input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .f-range .dash { color: var(--grey-500); }
+
+  /* ============ Sort bar ============ */
+  .sortbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 22px; margin-bottom: 32px;
+    border-bottom: 1px solid var(--grey-200);
+    gap: 16px;
+  }
+  .sortbar-left {
+    font-family: var(--font-display); font-weight: 500; font-size: 13px;
+    color: var(--grey-500); letter-spacing: 0.02em;
+  }
+  .sortbar-left strong { color: var(--navy); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sortbar-right { display: flex; align-items: center; gap: 24px; }
+  .density {
+    display: flex; gap: 2px; padding: 3px; background: var(--grey-100); border-radius: 4px;
+  }
+  .density button {
+    width: 30px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+    color: var(--grey-500); border-radius: 3px;
+    transition: all 180ms;
+  }
+  .density button.is-active { background: var(--white); color: var(--navy); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+  .density button:hover { color: var(--navy); }
+
+  .sort-select {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-weight: 500; font-size: 13px;
+    color: var(--navy); cursor: pointer;
+    position: relative;
+  }
+  .sort-select select {
+    appearance: none; -webkit-appearance: none;
+    border: none; background: transparent; padding: 6px 24px 6px 0;
+    font-family: var(--font-display); font-weight: 500; font-size: 13px;
+    color: var(--navy); cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+  .sort-select::after {
+    content: ''; position: absolute; right: 4px; top: 50%;
+    width: 7px; height: 7px;
+    border-right: 1.5px solid var(--navy);
+    border-bottom: 1.5px solid var(--navy);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+  }
+  .sort-label { color: var(--grey-500); font-weight: 400; }
+
+  @media (max-width: 700px) {
+    .sortbar { flex-direction: column; align-items: stretch; gap: 16px; }
+    .sortbar-right { justify-content: space-between; }
+  }
+
+  /* ============ Product grid ============ */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px 24px;
+    transition: opacity 250ms ease-out;
+  }
+  .grid.is-loading { opacity: 0.35; }
+  .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid.cols-1 { grid-template-columns: 1fr; }
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 880px) {
+    .grid, .grid.cols-2, .grid.cols-1 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .grid, .grid.cols-2, .grid.cols-1 { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--white);
+    display: flex; flex-direction: column;
+    opacity: 0; transform: translateY(12px);
+    animation: cardIn 480ms cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card-media {
+    aspect-ratio: 1 / 1;
+    background: var(--tint-1);
+    border: 1px solid var(--grey-200);
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-img-stage {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .card-img-stage img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: contain;
+    transition: opacity 350ms ease-out, transform 600ms ease-out;
+    mix-blend-mode: multiply;
+  }
+  .card-img-stage .alt { opacity: 0; }
+  .card:hover .card-img-stage .alt { opacity: 1; }
+  .card:hover .card-img-stage .primary { opacity: 0; }
+  .card-progress {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: 2px; background: transparent;
+    overflow: hidden;
+  }
+  .card-progress::after {
+    content: ''; display: block;
+    width: 100%; height: 100%; background: var(--orange);
+    transform: translateX(-100%);
+    transition: transform 400ms cubic-bezier(0.55,0,0.1,1);
+  }
+  .card:hover .card-progress::after { transform: translateX(0); }
+
+  .card-tag {
+    position: absolute; left: 16px; top: 16px;
+    font-family: var(--font-display); font-weight: 500; font-size: 9px;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--navy);
+    background: rgba(255,255,255,0.7); backdrop-filter: blur(3px);
+    padding: 4px 8px; border-radius: 2px;
+  }
+  .card-tag.new { color: var(--orange); }
+
+  .card-body {
+    padding: 16px 4px 0;
+    display: flex; flex-direction: column;
+  }
+  .card-system {
+    font-family: var(--font-display); font-weight: 600; font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .card-name-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    margin-bottom: 6px;
+  }
+  .card-name {
+    font-family: var(--font-display); font-weight: 700; font-size: 18px;
+    letter-spacing: -0.005em; color: var(--navy);
+    line-height: 1.2;
+  }
+  .card-price {
+    font-family: var(--font-display); font-weight: 700; font-size: 16px;
+    color: var(--navy); white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .card-spec {
+    font-family: var(--font-body); font-weight: 300; font-size: 14px;
+    color: var(--grey-500);
+    margin-bottom: 12px;
+  }
+  .card-actions {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid var(--grey-200);
+    display: flex; justify-content: space-between; align-items: center;
+    height: 48px;
+  }
+  .card-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-display); font-weight: 500; font-size: 11px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--grey-500); padding: 6px 0;
+    transition: color 200ms;
+  }
+  .card-action:hover { color: var(--navy); }
+  .card-action.is-on { color: var(--orange); }
+
+  /* ============ Pagination ============ */
+  .paginate {
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    margin-top: 80px;
+    padding-top: 56px;
+    border-top: 1px solid var(--grey-200);
+  }
+  .paginate .count {
+    font-family: var(--font-display); font-weight: 500; font-size: 12px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--grey-500); font-variant-numeric: tabular-nums;
+  }
+
+  /* ============ Specialist band ============ */
+  .specialist {
+    background: var(--navy);
+    color: var(--white);
+    padding: 80px 0;
+    margin-top: 80px;
+  }
+  .specialist-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 48px;
+    display: grid; grid-template-columns: 280px 1fr auto;
+    gap: 56px; align-items: center;
+  }
+  .specialist-photo {
+    width: 280px; height: 280px;
+    background:
+      linear-gradient(135deg, rgba(232,123,30,0.18) 0%, rgba(0,0,0,0) 60%),
+      url('https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=600&q=85&auto=format&fit=crop') center/cover no-repeat;
+    border-radius: 4px;
+    filter: contrast(1.05) saturate(0.92);
+  }
+  .specialist-copy .kicker {
+    font-family: var(--font-display); font-weight: 500; font-size: 11px;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 18px;
+  }
+  .specialist-copy h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(28px, 3.2vw, 42px); line-height: 1.08;
+    letter-spacing: -0.02em; color: var(--white);
+    margin-bottom: 18px;
+    max-width: 20ch;
+  }
+  .specialist-copy .desc {
+    font-family: var(--font-body); font-weight: 300; font-size: 15px;
+    color: rgba(255,255,255,0.72); line-height: 1.65;
+    max-width: 42ch;
+  }
+  .specialist-meta {
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 16px; margin-top: 22px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .specialist-meta .name {
+    font-family: var(--font-display); font-weight: 600; font-size: 14px;
+    color: var(--white); letter-spacing: -0.01em;
+  }
+  .specialist-meta .role {
+    font-family: var(--font-body); font-weight: 300; font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+  @media (max-width: 1024px) {
+    .specialist-inner { grid-template-columns: 1fr; text-align: left; padding: 0 22px; }
+    .specialist-photo { width: 100%; max-width: 320px; height: 220px; }
+    .specialist { padding: 56px 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =========== NAV =========== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="Homepage 1B.html" class="nav-logo">ebco<span class="dot"></span></a>
+    <nav class="nav-items">
+      <a href="#" class="is-active">Solutions</a>
+      <a href="#">Catalogues</a>
+      <a href="Find a Centre.html">Discovery Centres</a>
+      <a href="#">Trade</a>
+      <a href="#">Support</a>
+    </nav>
+    <div class="nav-right">
+      <label class="search-pill" aria-label="Search">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5" stroke-linecap="round"></path>
+        </svg>
+        <input type="search" placeholder="Search drawer slides" />
+      </label>
+      <button class="icon-btn" aria-label="Saved"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h12v17l-6-4-6 4z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn" aria-label="Cart"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h2l2.5 11.5a2 2 0 0 0 2 1.5h8.5a2 2 0 0 0 2-1.5L22 8H6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="21" r="1.2" fill="currentColor" stroke="none"/><circle cx="18" cy="21" r="1.2" fill="currentColor" stroke="none"/></svg></button>
+      <a href="Find a Centre.html" class="nav-cta"><span class="nav-cta-text">Find a centre</span> →</a>
+    </div>
+  </div>
+</header>
+
+<!-- =========== CATEGORY HERO =========== -->
+<section class="cat-hero" data-screen-label="00 Category Hero">
+  <div class="cat-hero-inner">
+    <div>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="Homepage 1B.html">Home</a>
+        <span class="sep">→</span>
+        <a href="#">Systems</a>
+        <span class="sep">→</span>
+        <span class="current">Drawer Slides</span>
+      </nav>
+      <h1>Drawer Slides</h1>
+      <p class="manifesto">A taxonomy of motion. Ball-bearing, undermount, push-to-open — every slide engineered to vanish into the cabinet it serves.</p>
+    </div>
+    <div class="count-chip"><span class="dot"></span><span id="result-count-chip">237 systems</span></div>
+  </div>
+</section>
+
+<!-- =========== WORKING AREA =========== -->
+<main class="work">
+
+  <!-- Filter rail -->
+  <aside class="filters" aria-label="Filters">
+    <div class="filters-head">
+      <span class="ttl">Filter</span>
+      <button class="reset" id="reset-btn" type="button">Reset</button>
+    </div>
+
+    <div class="active-chips" id="active-chips"></div>
+
+    <!-- System (open) -->
+    <div class="f-group" data-group="System">
+      <div class="f-group-head">
+        <span class="lbl">System</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Glydra" /><span class="box"></span><span class="lbl-text">Glydra</span><span class="qty">68</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Quadro" /><span class="box"></span><span class="lbl-text">Quadro</span><span class="qty">52</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Tandem" /><span class="box"></span><span class="lbl-text">Tandem Box</span><span class="qty">41</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Telescopic" /><span class="box"></span><span class="lbl-text">Telescopic</span><span class="qty">38</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Undermount" /><span class="box"></span><span class="lbl-text">Undermount</span><span class="qty">22</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="System" value="Heavy Duty" /><span class="box"></span><span class="lbl-text">Heavy Duty</span><span class="qty">16</span></label>
+      </div>
+    </div>
+
+    <!-- Finish (open) -->
+    <div class="f-group" data-group="Finish">
+      <div class="f-group-head">
+        <span class="lbl">Finish</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <label class="f-check"><input type="checkbox" data-facet="Finish" value="Zinc" /><span class="box"></span><span class="lbl-text">Zinc plated</span><span class="qty">94</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Finish" value="Brushed Nickel" /><span class="box"></span><span class="lbl-text">Brushed nickel</span><span class="qty">52</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Finish" value="Matt Black" /><span class="box"></span><span class="lbl-text">Matt black</span><span class="qty">38</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Finish" value="Satin Chrome" /><span class="box"></span><span class="lbl-text">Satin chrome</span><span class="qty">28</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Finish" value="Black Oxide" /><span class="box"></span><span class="lbl-text">Black oxide</span><span class="qty">25</span></label>
+      </div>
+    </div>
+
+    <!-- Load rating (open) -->
+    <div class="f-group" data-group="Load">
+      <div class="f-group-head">
+        <span class="lbl">Load Rating</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <label class="f-check"><input type="checkbox" data-facet="Load" value="≤ 25 kg" /><span class="box"></span><span class="lbl-text">Up to 25 kg</span><span class="qty">62</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Load" value="30 kg" /><span class="box"></span><span class="lbl-text">30 kg</span><span class="qty">84</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Load" value="40 kg" /><span class="box"></span><span class="lbl-text">40 kg</span><span class="qty">52</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Load" value="45–70 kg" /><span class="box"></span><span class="lbl-text">45 – 70 kg</span><span class="qty">26</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Load" value="≥ 80 kg" /><span class="box"></span><span class="lbl-text">80 kg and above</span><span class="qty">13</span></label>
+      </div>
+    </div>
+
+    <!-- Length (collapsed) -->
+    <div class="f-group collapsed" data-group="Length">
+      <div class="f-group-head">
+        <span class="lbl">Length</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <div class="f-range">
+          <input type="number" placeholder="250" min="200" max="1200" />
+          <span class="dash">–</span>
+          <input type="number" placeholder="800" min="200" max="1200" />
+          <span style="font-size:12px;color:var(--grey-500);">mm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing action (collapsed) -->
+    <div class="f-group collapsed" data-group="Closing">
+      <div class="f-group-head">
+        <span class="lbl">Closing Action</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <label class="f-check"><input type="checkbox" data-facet="Closing" value="Soft-close" /><span class="box"></span><span class="lbl-text">Soft-close</span><span class="qty">112</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Closing" value="Push-to-open" /><span class="box"></span><span class="lbl-text">Push-to-open</span><span class="qty">48</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Closing" value="Self-close" /><span class="box"></span><span class="lbl-text">Self-close</span><span class="qty">36</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Closing" value="Standard" /><span class="box"></span><span class="lbl-text">Standard</span><span class="qty">41</span></label>
+      </div>
+    </div>
+
+    <!-- Extension (collapsed) -->
+    <div class="f-group collapsed" data-group="Extension">
+      <div class="f-group-head">
+        <span class="lbl">Extension</span>
+        <svg class="toggle" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="f-group-body">
+        <label class="f-check"><input type="checkbox" data-facet="Extension" value="Full" /><span class="box"></span><span class="lbl-text">Full extension</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Extension" value="Over-travel" /><span class="box"></span><span class="lbl-text">Over-travel</span></label>
+        <label class="f-check"><input type="checkbox" data-facet="Extension" value="Three-quarter" /><span class="box"></span><span class="lbl-text">Three-quarter</span></label>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Grid column -->
+  <div>
+
+    <!-- Sort bar -->
+    <div class="sortbar">
+      <div class="sortbar-left">
+        Showing <strong id="shown-count">12</strong> of <strong id="total-count">237</strong> systems
+      </div>
+      <div class="sortbar-right">
+        <div class="density" role="tablist" aria-label="View density">
+          <button class="is-active" data-cols="3" aria-label="3 columns">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="2" width="3.5" height="12"/><rect x="6.25" y="2" width="3.5" height="12"/><rect x="11.5" y="2" width="3.5" height="12"/></svg>
+          </button>
+          <button data-cols="2" aria-label="2 columns">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="2" width="6" height="12"/><rect x="9" y="2" width="6" height="12"/></svg>
+          </button>
+          <button data-cols="1" aria-label="1 column">
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor"><rect x="1" y="2" width="14" height="12"/></svg>
+          </button>
+        </div>
+        <div class="sort-select">
+          <span class="sort-label">Sort by</span>
+          <select id="sort">
+            <option>Featured</option>
+            <option>Newest</option>
+            <option>Load rating · high → low</option>
+            <option>Price · low → high</option>
+            <option>Price · high → low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product grid -->
+    <div class="grid" id="grid"></div>
+
+    <!-- Pagination -->
+    <div class="paginate">
+      <button class="btn btn-outline-navy" id="load-more">Load 24 more</button>
+      <div class="count">Showing <span id="shown-count-2">12</span> of 237</div>
+    </div>
+  </div>
+</main>
+
+<!-- =========== SPECIALIST BAND =========== -->
+<section class="specialist" data-screen-label="Specialist Band">
+  <div class="specialist-inner">
+    <div class="specialist-photo" aria-hidden="true"></div>
+    <div class="specialist-copy">
+      <div class="kicker">— TALK TO A SPECIALIST</div>
+      <h2>Not sure which slide is right for your specification?</h2>
+      <p class="desc">Walk through your project with one of our hardware specialists. They'll help you match dimensions, load rating, and finish to your cabinet language — in fifteen minutes, no commitment.</p>
+      <div class="specialist-meta">
+        <div class="name">Aanya Iyer</div>
+        <div class="role">Senior Product Specialist · Mumbai Discovery Centre</div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <a href="#" class="btn btn-primary">Book a 15-minute call</a>
+      <a href="#" class="btn btn-outline-navy" style="border-color:rgba(255,255,255,0.4); color:var(--white);">Email a question</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ============ Product data ============
+  const PRODUCTS = [
+    { id:'GLY-550-40', system:'Glydra', name:'Glydra 550 SC', spec:'550 mm · 40 kg · Soft-close', price:'₹ 1,840', tag:'NEW', finish:'Zinc', img1:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop' },
+    { id:'GLY-450-30', system:'Glydra', name:'Glydra 450 SC', spec:'450 mm · 30 kg · Soft-close', price:'₹ 1,520', finish:'Zinc', img1:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80&auto=format&fit=crop' },
+    { id:'QDR-500-45', system:'Quadro', name:'Quadro V6 500', spec:'500 mm · 45 kg · Tip-on', price:'₹ 3,240', tag:'BESTSELLER', finish:'Brushed Nickel', img1:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80&auto=format&fit=crop' },
+    { id:'TND-450-30', system:'Tandem', name:'Tandem Box', spec:'450 mm · 30 kg · Soft-close', price:'₹ 2,180', finish:'Matt Black', img1:'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=80&auto=format&fit=crop' },
+    { id:'TLS-400-25', system:'Telescopic', name:'Telescopic 400', spec:'400 mm · 25 kg · Standard', price:'₹ 740', finish:'Zinc', img1:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop' },
+    { id:'UND-500-40', system:'Undermount', name:'Undermount Lyra', spec:'500 mm · 40 kg · Soft-close', price:'₹ 2,960', tag:'NEW', finish:'Zinc', img1:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80&auto=format&fit=crop' },
+    { id:'HDY-600-80', system:'Heavy Duty', name:'Cargo HD 600', spec:'600 mm · 80 kg · Industrial', price:'₹ 4,120', finish:'Black Oxide', img1:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80&auto=format&fit=crop' },
+    { id:'GLY-350-30', system:'Glydra', name:'Glydra Mini 350', spec:'350 mm · 30 kg · Soft-close', price:'₹ 1,240', finish:'Brushed Nickel', img1:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80&auto=format&fit=crop' },
+    { id:'QDR-600-70', system:'Quadro', name:'Quadro Pro 600', spec:'600 mm · 70 kg · Soft-close', price:'₹ 4,680', tag:'BESTSELLER', finish:'Satin Chrome', img1:'https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop' },
+    { id:'TND-550-45', system:'Tandem', name:'Tandem Plus 550', spec:'550 mm · 45 kg · Push-to-open', price:'₹ 2,640', finish:'Matt Black', img1:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=80&auto=format&fit=crop' },
+    { id:'UND-450-30', system:'Undermount', name:'Undermount Lyra 450', spec:'450 mm · 30 kg · Self-close', price:'₹ 2,420', finish:'Zinc', img1:'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop' },
+    { id:'TLS-500-25', system:'Telescopic', name:'Telescopic 500', spec:'500 mm · 25 kg · Standard', price:'₹ 860', finish:'Zinc', img1:'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=900&q=80&auto=format&fit=crop', img2:'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=900&q=80&auto=format&fit=crop' },
+  ];
+
+  const grid = document.getElementById('grid');
+  const chipsBar = document.getElementById('active-chips');
+  const allChecks = document.querySelectorAll('.f-check input[type="checkbox"]');
+
+  function renderGrid(products) {
+    grid.classList.add('is-loading');
+    setTimeout(() => {
+      grid.innerHTML = products.map((p, i) => `
+        <a href="PDP - Glydra Soft-Close.html" class="card" style="animation-delay:${i*40}ms">
+          <div class="card-media">
+            ${p.tag ? `<span class="card-tag ${p.tag==='NEW'?'new':''}">${p.tag}</span>` : ''}
+            <div class="card-img-stage">
+              <img class="primary" src="${p.img1}" alt="${p.name}" loading="lazy" />
+              <img class="alt" src="${p.img2}" alt="${p.name} in use" loading="lazy" />
+            </div>
+            <div class="card-progress"></div>
+          </div>
+          <div class="card-body">
+            <div class="card-system">${p.system}</div>
+            <div class="card-name-row">
+              <div class="card-name">${p.name}</div>
+              <div class="card-price">${p.price}</div>
+            </div>
+            <div class="card-spec">${p.spec}</div>
+            <div class="card-actions">
+              <button class="card-action" type="button" onclick="event.preventDefault(); this.classList.toggle('is-on');">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round"/></svg>
+                Compare
+              </button>
+              <button class="card-action" type="button" onclick="event.preventDefault(); this.classList.toggle('is-on');">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h12v17l-6-4-6 4z" stroke-linejoin="round"/></svg>
+                Save
+              </button>
+            </div>
+          </div>
+        </a>
+      `).join('');
+      grid.classList.remove('is-loading');
+    }, 220);
+  }
+
+  // Initial render
+  renderGrid(PRODUCTS);
+
+  // ============ Filter logic ============
+  function getActive() {
+    const active = [];
+    allChecks.forEach(c => {
+      if (c.checked) active.push({ facet: c.dataset.facet, value: c.value, el: c });
+    });
+    return active;
+  }
+
+  function renderChips() {
+    const active = getActive();
+    chipsBar.innerHTML = active.map(a => `
+      <span class="chip" data-value="${a.value}">
+        <span class="dot"></span>
+        <span>${a.value}</span>
+        <span class="x" data-value="${a.value}" data-facet="${a.facet}">×</span>
+      </span>
+    `).join('');
+    chipsBar.querySelectorAll('.x').forEach(x => {
+      x.addEventListener('click', () => {
+        const v = x.dataset.value, f = x.dataset.facet;
+        allChecks.forEach(c => { if (c.dataset.facet === f && c.value === v) c.checked = false; });
+        applyFilters();
+      });
+    });
+  }
+
+  function applyFilters() {
+    renderChips();
+    const active = getActive();
+    // Simple filter: match if product.system or product.finish or product.spec matches any selected value
+    let filtered = PRODUCTS;
+    const byFacet = {};
+    active.forEach(a => { (byFacet[a.facet] = byFacet[a.facet] || []).push(a.value); });
+
+    if (byFacet.System) filtered = filtered.filter(p => byFacet.System.includes(p.system));
+    if (byFacet.Finish) filtered = filtered.filter(p => byFacet.Finish.includes(p.finish));
+    if (byFacet.Load) filtered = filtered.filter(p => byFacet.Load.some(l => p.spec.includes(l.replace(' ',''))) || byFacet.Load.some(l => p.spec.includes(l)));
+    if (byFacet.Closing) filtered = filtered.filter(p => byFacet.Closing.some(c => p.spec.toLowerCase().includes(c.toLowerCase())));
+
+    renderGrid(filtered);
+    document.getElementById('shown-count').textContent = filtered.length;
+    document.getElementById('shown-count-2').textContent = filtered.length;
+  }
+
+  allChecks.forEach(c => c.addEventListener('change', applyFilters));
+
+  // Group collapse
+  document.querySelectorAll('.f-group-head').forEach(h => {
+    h.addEventListener('click', () => h.parentElement.classList.toggle('collapsed'));
+  });
+
+  // Reset
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    allChecks.forEach(c => c.checked = false);
+    applyFilters();
+  });
+
+  // Density toggle
+  document.querySelectorAll('.density button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.density button').forEach(x => x.classList.remove('is-active'));
+      b.classList.add('is-active');
+      grid.classList.remove('cols-1','cols-2','cols-3');
+      const cols = b.dataset.cols;
+      if (cols !== '3') grid.classList.add('cols-' + cols);
+    });
+  });
+
+  // Sort (mock — just re-stagger the cards for feel)
+  document.getElementById('sort').addEventListener('change', () => {
+    grid.classList.add('is-loading');
+    setTimeout(() => renderGrid([...PRODUCTS].sort(() => Math.random() - 0.5)), 100);
+  });
+
+  // Load more
+  document.getElementById('load-more').addEventListener('click', () => {
+    const more = [...PRODUCTS, ...PRODUCTS];
+    renderGrid(more);
+    document.getElementById('shown-count').textContent = more.length;
+    document.getElementById('shown-count-2').textContent = more.length;
+  });
+</script>
+
+</body>
+</html>

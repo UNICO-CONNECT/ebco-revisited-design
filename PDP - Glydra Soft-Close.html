@@ -1,0 +1,1489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Glydra 550 Soft-Close — Ebco</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700;800&family=Manrope:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="catalogue.css" />
+<script src="mega-menu.js" defer></script>
+
+<style>
+  /* ============ PDP-specific ============ */
+
+  /* Breadcrumb above fold */
+  .pdp-crumb {
+    max-width: 1440px; margin: 0 auto;
+    padding: 24px 48px 0;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--grey-500);
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .pdp-crumb a:hover { color: var(--navy); }
+  .pdp-crumb .current { color: var(--navy); }
+  .pdp-crumb .sep { opacity: 0.4; }
+
+  /* ============ Above the fold ============ */
+  .pdp {
+    max-width: 1440px; margin: 0 auto;
+    padding: 32px 48px 88px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 64px;
+    align-items: flex-start;
+  }
+  @media (max-width: 1024px) {
+    .pdp { grid-template-columns: 1fr; gap: 40px; padding: 24px 22px 64px; }
+    .pdp-crumb { padding: 18px 22px 0; }
+  }
+
+  /* ============ Media stage ============ */
+  .media {
+    position: relative;
+  }
+  .media-frame {
+    aspect-ratio: 4 / 5;
+    background: var(--tint-1);
+    border: 1px solid var(--grey-200);
+    position: relative;
+    overflow: hidden;
+  }
+  .media-frame video,
+  .media-frame .media-image {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .media-image {
+    background-size: cover; background-position: center;
+    transition: opacity 350ms ease-out;
+  }
+  /* AR pill */
+  .ar-pill {
+    position: absolute; top: 18px; right: 18px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(8px);
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.6);
+    font-family: var(--font-display); font-weight: 600; font-size: 11px;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy);
+    box-shadow: 0 8px 24px -8px rgba(9,40,83,0.18);
+    cursor: pointer;
+    transition: transform 200ms;
+  }
+  .ar-pill:hover { transform: translateY(-1px); }
+  .ar-pill .glyph { color: var(--orange); display: inline-flex; }
+
+  /* Video chrome (mute + scrub) */
+  .media-chrome {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%);
+    color: var(--white);
+  }
+  .media-chrome .play-btn,
+  .media-chrome .mute-btn {
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.28);
+    color: var(--white);
+    transition: background 200ms;
+  }
+  .media-chrome .play-btn:hover,
+  .media-chrome .mute-btn:hover { background: rgba(255,255,255,0.28); }
+  .media-chrome .scrub {
+    flex: 1; height: 2px;
+    background: rgba(255,255,255,0.28);
+    position: relative; cursor: pointer;
+  }
+  .media-chrome .scrub-fill {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 35%; background: var(--orange);
+    transition: width 80ms linear;
+  }
+  .media-chrome .time {
+    font-family: var(--font-display); font-weight: 500; font-size: 11px;
+    letter-spacing: 0.06em; font-variant-numeric: tabular-nums;
+    opacity: 0.85;
+  }
+  .media-frame.is-image .media-chrome { display: none; }
+
+  /* Thumb strip */
+  .thumbs {
+    display: flex; gap: 12px;
+    margin-top: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .thumbs::-webkit-scrollbar { height: 4px; }
+  .thumbs::-webkit-scrollbar-thumb { background: var(--grey-200); border-radius: 2px; }
+  .thumb {
+    flex: 0 0 auto;
+    width: 80px; height: 80px;
+    border: 1px solid var(--grey-200);
+    background-color: var(--tint-1);
+    background-size: cover; background-position: center;
+    position: relative;
+    cursor: pointer;
+    transition: border-color 200ms;
+  }
+  .thumb:hover { border-color: var(--grey-300); }
+  .thumb.is-active::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -3px;
+    height: 2px; background: var(--orange);
+  }
+  .thumb.video-thumb::before {
+    content: ''; position: absolute; inset: 50%;
+    width: 22px; height: 22px; margin: -11px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .thumb.video-thumb::after {
+    /* play triangle */
+    content: ''; position: absolute; inset: 50%;
+    width: 0; height: 0; margin: -4px -3px;
+    border-left: 7px solid var(--navy);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    z-index: 2;
+  }
+  .thumb.video-thumb.is-active::after { display: none; }
+
+  /* ============ Configurator column ============ */
+  .info {
+    position: sticky; top: 80px;
+    align-self: start;
+  }
+  @media (max-width: 1024px) {
+    .info { position: relative; top: auto; }
+  }
+
+  .info .kicker {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 14px;
+  }
+  .info h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 36px; line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .info .poetic {
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 17px; line-height: 1.55; color: var(--grey-500);
+    margin-bottom: 18px;
+    max-width: 38ch;
+  }
+  .info .code {
+    font-family: var(--font-mono); font-weight: 400;
+    font-size: 12px; letter-spacing: 0.04em; color: var(--grey-500);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--grey-200);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .info .code .copy {
+    cursor: pointer; color: var(--grey-500);
+    transition: color 200ms;
+  }
+  .info .code .copy:hover { color: var(--orange); }
+
+  /* ============ Configurator ============ */
+  .cfg-block { margin-top: 24px; }
+  .cfg-block .lbl-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .cfg-block .lbl {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--navy);
+  }
+  .cfg-block .val {
+    font-family: var(--font-body); font-weight: 500;
+    font-size: 13px; color: var(--grey-500);
+  }
+  .cfg-block .val strong { color: var(--navy); font-weight: 600; }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill {
+    padding: 9px 16px; border: 1px solid var(--grey-300);
+    border-radius: 50px;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.04em; color: var(--navy);
+    cursor: pointer;
+    transition: all 200ms;
+    background: transparent;
+    font-variant-numeric: tabular-nums;
+  }
+  .pill:hover { border-color: var(--navy); }
+  .pill.is-active {
+    background: var(--navy); color: var(--white); border-color: var(--navy);
+  }
+  .pill[disabled] {
+    opacity: 0.4; cursor: not-allowed; pointer-events: none;
+    text-decoration: line-through;
+  }
+
+  /* Finish swatches */
+  .swatch-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  .swatch {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    background-size: cover; background-position: center;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+    transition: transform 200ms;
+  }
+  .swatch:hover { transform: scale(1.06); }
+  .swatch.is-active {
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08), 0 0 0 2px var(--orange);
+  }
+  .swatch-name {
+    margin-top: 10px;
+    font-family: var(--font-body); font-weight: 400;
+    font-size: 12px; color: var(--grey-500);
+  }
+
+  /* Mounting cards */
+  .mount-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .mount-card {
+    border: 1px solid var(--grey-200); border-radius: 4px;
+    padding: 14px;
+    cursor: pointer;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all 200ms;
+    background: var(--white);
+  }
+  .mount-card:hover { border-color: var(--grey-300); }
+  .mount-card.is-active { border-color: var(--orange); box-shadow: inset 0 0 0 1px var(--orange); }
+  .mount-card .icon {
+    width: 100%; height: 64px;
+    background: var(--tint-1);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--navy);
+    border-radius: 2px;
+  }
+  .mount-card .name {
+    font-family: var(--font-display); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.04em; color: var(--navy);
+  }
+  .mount-card .sub {
+    font-family: var(--font-body); font-weight: 300; font-size: 12px;
+    color: var(--grey-500); line-height: 1.4;
+  }
+
+  /* Price block */
+  .price-block {
+    margin-top: 32px; padding-top: 28px;
+    border-top: 1px solid var(--grey-200);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .price {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 28px; color: var(--navy);
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    display: flex; align-items: baseline; gap: 12px;
+  }
+  .price .per {
+    font-family: var(--font-body); font-weight: 400; font-size: 13px;
+    color: var(--grey-500); letter-spacing: 0;
+  }
+  .trade-link {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.04em; color: var(--orange);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .trade-link:hover { color: var(--orange-hover); }
+
+  /* Qty + CTAs */
+  .qty-cta {
+    margin-top: 22px;
+    display: grid; grid-template-columns: 110px 1fr; gap: 10px;
+  }
+  .qty {
+    display: flex; align-items: center; justify-content: space-between;
+    border: 1px solid var(--grey-300);
+    border-radius: 50px;
+    padding: 4px;
+  }
+  .qty button {
+    width: 32px; height: 32px;
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--navy); font-size: 16px; font-weight: 500;
+    border-radius: 50%;
+    transition: background 180ms;
+  }
+  .qty button:hover { background: var(--grey-100); }
+  .qty input {
+    width: 36px; text-align: center;
+    border: none; outline: none; background: transparent;
+    font-family: var(--font-display); font-weight: 600; font-size: 14px;
+    color: var(--navy); font-variant-numeric: tabular-nums;
+  }
+  .cta-pair { display: flex; gap: 8px; }
+  .cta-pair .btn { flex: 1; padding: 13px 18px; }
+
+  /* Trust row */
+  .trust {
+    margin-top: 26px;
+    display: flex; flex-wrap: wrap; gap: 18px 28px;
+    padding-top: 22px;
+    border-top: 1px solid var(--grey-200);
+  }
+  .trust-item {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.06em;
+    color: var(--navy);
+  }
+  .trust-item .check {
+    color: var(--orange);
+    display: inline-flex;
+  }
+
+  /* ============ Below the fold ============ */
+  .below {
+    background: var(--tint-1);
+    padding: 100px 0;
+    margin-top: 32px;
+  }
+  .below-inner {
+    max-width: 1440px; margin: 0 auto; padding: 0 48px;
+  }
+  .below-head {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 56px; gap: 32px;
+    border-bottom: 1px solid var(--grey-200);
+    padding-bottom: 28px;
+  }
+  .below-head .kicker {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .below-head .kicker::before { content: ''; width: 18px; height: 1px; background: var(--orange); }
+  .below-head h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(28px, 3.2vw, 42px); line-height: 1.08;
+    letter-spacing: -0.015em; color: var(--navy);
+    max-width: 20ch;
+  }
+  .below-head .tabs {
+    display: flex; gap: 24px;
+  }
+  .below-head .tab {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--grey-500);
+    padding-bottom: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: all 200ms;
+  }
+  .below-head .tab.is-active { color: var(--navy); border-bottom-color: var(--orange); }
+  .below-head .tab:hover { color: var(--navy); }
+
+  /* Tab panels */
+  .tab-panel { display: none; }
+  .tab-panel.is-active { display: block; animation: tabIn 320ms cubic-bezier(0.16,1,0.3,1); }
+  @keyframes tabIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Dimensions panel ===== */
+  .dim-wrap {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 56px;
+    align-items: flex-start;
+  }
+  @media (max-width: 900px) { .dim-wrap { grid-template-columns: 1fr; gap: 32px; } }
+
+  .dim-drawing {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: 4px;
+    padding: 28px 32px 20px;
+    position: relative;
+  }
+  .dim-drawing .dim-cap {
+    position: absolute; top: 14px; left: 16px;
+    font-family: var(--font-display); font-weight: 500; font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--grey-500);
+  }
+  .dim-drawing .dim-units {
+    position: absolute; top: 14px; right: 16px;
+    font-family: var(--font-display); font-weight: 500; font-size: 10px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--grey-500);
+  }
+  .dim-drawing svg { width: 100%; height: auto; display: block; margin-top: 18px; }
+
+  .dim-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-body); font-size: 13px;
+    color: var(--navy);
+  }
+  .dim-table thead th {
+    text-align: left;
+    padding: 12px 14px;
+    background: var(--tint-1);
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--grey-500);
+    border-bottom: 1px solid var(--grey-200);
+    border-top: 1px solid var(--grey-200);
+  }
+  .dim-table thead th.num { text-align: right; }
+  .dim-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--grey-200);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .dim-table tbody td.num { text-align: right; }
+  .dim-table tbody tr.is-active td { background: rgba(232,123,30,0.06); color: var(--navy); font-weight: 500; }
+  .dim-table tbody tr.is-active td:first-child { box-shadow: inset 3px 0 0 var(--orange); }
+  .dim-table tbody tr:hover td { background: var(--tint-3); cursor: pointer; }
+
+  .dim-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px dashed var(--grey-200);
+  }
+  .dim-foot .note {
+    font-family: var(--font-body); font-weight: 300; font-size: 12px;
+    color: var(--grey-500); max-width: 36ch; line-height: 1.5;
+  }
+  .dim-foot a {
+    color: var(--orange); font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .dim-foot a:hover { color: var(--orange-hover); }
+
+  /* ===== Downloads panel ===== */
+  .dl-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 24px;
+  }
+  .dl-head .ttl {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--grey-500);
+  }
+  .dl-head .ctrl {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.04em; color: var(--orange);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .dl-head .ctrl:hover { color: var(--orange-hover); }
+
+  .dl-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 700px) { .dl-grid { grid-template-columns: 1fr; } }
+
+  .dl-card {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: 4px;
+    padding: 18px 18px;
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    transition: border-color 200ms, background 200ms;
+  }
+  .dl-card:hover { border-color: var(--orange); background: var(--tint-1); }
+  .dl-card .ic {
+    width: 44px; height: 52px;
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--white);
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 9px; letter-spacing: 0.08em;
+    position: relative;
+    background: var(--navy);
+  }
+  .dl-card .ic::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 10px; height: 10px;
+    background: linear-gradient(135deg, transparent 50%, var(--white) 50%);
+  }
+  .dl-card.t-pdf .ic { background: #C8392B; }
+  .dl-card.t-dwg .ic { background: #0F7A3A; }
+  .dl-card.t-bim .ic { background: var(--navy); }
+  .dl-card.t-step .ic { background: #5B4FB8; }
+  .dl-card.t-img .ic { background: #E87B1E; }
+  .dl-card .name {
+    font-family: var(--font-display); font-weight: 600; font-size: 14px;
+    color: var(--navy); letter-spacing: -0.005em;
+    line-height: 1.25;
+    margin-bottom: 4px;
+  }
+  .dl-card .meta {
+    font-family: var(--font-body); font-weight: 300; font-size: 12px;
+    color: var(--grey-500);
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .dl-card .meta span { display: inline-flex; align-items: center; gap: 5px; }
+  .dl-card .meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--grey-300); }
+  .dl-card .dl-btn {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--grey-200);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--navy);
+    background: var(--white);
+    transition: all 200ms;
+    flex-shrink: 0;
+  }
+  .dl-card:hover .dl-btn { background: var(--orange); color: var(--white); border-color: var(--orange); }
+  .dl-card .dl-btn.is-done {
+    background: #1F8A5B; color: var(--white); border-color: #1F8A5B;
+  }
+
+  .dl-progress {
+    grid-column: 1 / -1;
+    height: 2px;
+    background: var(--grey-200);
+    border-radius: 2px;
+    margin-top: 12px;
+    overflow: hidden;
+    display: none;
+  }
+  .dl-card.is-downloading .dl-progress { display: block; }
+  .dl-progress::after {
+    content: ''; display: block; height: 100%;
+    background: var(--orange);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  .dl-card.is-downloading .dl-progress::after { width: 100%; }
+
+  .dl-bulk {
+    margin-top: 28px;
+    padding: 20px 24px;
+    background: var(--tint-1);
+    border-radius: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 18px; flex-wrap: wrap;
+  }
+  .dl-bulk .bulk-text {
+    font-family: var(--font-body); font-weight: 300; font-size: 14px;
+    color: var(--grey-500); line-height: 1.5;
+  }
+  .dl-bulk .bulk-text strong { color: var(--navy); font-weight: 600; }
+
+  /* Spec table */
+  .spec-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 80px;
+  }
+  .spec-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--grey-200);
+    align-items: baseline;
+    gap: 20px;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row .k {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--grey-500);
+  }
+  .spec-row .v {
+    font-family: var(--font-body); font-weight: 400;
+    font-size: 15px; color: var(--navy);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 900px) {
+    .spec-grid { grid-template-columns: 1fr; gap: 0; }
+    .below-head { flex-direction: column; align-items: flex-start; }
+    .below { padding: 64px 0; }
+    .below-inner { padding: 0 22px; }
+  }
+
+  /* Related */
+  .related {
+    padding: 100px 0;
+  }
+  .related-inner { max-width: 1440px; margin: 0 auto; padding: 0 48px; }
+  .related-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 40px;
+  }
+  .related-head h3 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(24px, 2.6vw, 34px); line-height: 1.1;
+    letter-spacing: -0.015em; color: var(--navy);
+  }
+  .related-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  @media (max-width: 1024px) {
+    .related-grid { grid-template-columns: 1fr 1fr; }
+    .related-inner { padding: 0 22px; }
+    .related { padding: 64px 0; }
+  }
+  @media (max-width: 560px) {
+    .related-grid { grid-template-columns: 1fr; }
+  }
+  .rcard {
+    display: flex; flex-direction: column;
+  }
+  .rcard .media {
+    aspect-ratio: 1; background: var(--tint-1);
+    border: 1px solid var(--grey-200);
+    padding: 32px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: border-color 200ms;
+  }
+  .rcard:hover .media { border-color: var(--grey-300); }
+  .rcard img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+  .rcard .body { padding-top: 14px; }
+  .rcard .sys {
+    font-family: var(--font-display); font-weight: 600; font-size: 10px;
+    letter-spacing: 0.16em; color: var(--orange);
+    margin-bottom: 6px; text-transform: uppercase;
+  }
+  .rcard .n {
+    font-family: var(--font-display); font-weight: 700; font-size: 15px;
+    color: var(--navy); letter-spacing: -0.005em;
+  }
+  .rcard .s {
+    font-family: var(--font-body); font-weight: 300; font-size: 13px;
+    color: var(--grey-500); margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<!-- =========== NAV =========== -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="Homepage 1B.html" class="nav-logo">ebco<span class="dot"></span></a>
+    <nav class="nav-items">
+      <a href="PLP - Drawer Slides.html" class="is-active">Solutions</a>
+      <a href="#">Catalogues</a>
+      <a href="Find a Centre.html">Discovery Centres</a>
+      <a href="#">Trade</a>
+      <a href="#">Support</a>
+    </nav>
+    <div class="nav-right">
+      <label class="search-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg><input type="search" placeholder="Search the catalogue" /></label>
+      <button class="icon-btn" aria-label="Saved"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 4h12v17l-6-4-6 4z" stroke-linejoin="round"/></svg></button>
+      <button class="icon-btn" aria-label="Cart"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 5h2l2.5 11.5a2 2 0 0 0 2 1.5h8.5a2 2 0 0 0 2-1.5L22 8H6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="21" r="1.2" fill="currentColor" stroke="none"/><circle cx="18" cy="21" r="1.2" fill="currentColor" stroke="none"/></svg></button>
+      <a href="Find a Centre.html" class="nav-cta"><span class="nav-cta-text">Find a centre</span> →</a>
+    </div>
+  </div>
+</header>
+
+<!-- =========== BREADCRUMB =========== -->
+<nav class="pdp-crumb" aria-label="Breadcrumb">
+  <a href="Homepage 1B.html">Home</a>
+  <span class="sep">→</span>
+  <a href="#">Systems</a>
+  <span class="sep">→</span>
+  <a href="PLP - Drawer Slides.html">Drawer Slides</a>
+  <span class="sep">→</span>
+  <span class="current">Glydra 550 Soft-Close</span>
+</nav>
+
+<!-- =========== ABOVE THE FOLD =========== -->
+<section class="pdp" data-screen-label="01 Above-the-fold">
+
+  <!-- ===== Media stage ===== -->
+  <div class="media">
+    <div class="media-frame" id="frame">
+
+      <!-- Default: video -->
+      <video
+        id="hero-video"
+        autoplay muted loop playsinline
+        poster="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1600&q=85&auto=format&fit=crop"
+      >
+        <source src="https://videos.pexels.com/video-files/6474969/6474969-uhd_2560_1440_25fps.mp4" type="video/mp4" />
+      </video>
+
+      <!-- Still gallery (hidden by default, shown via thumbs) -->
+      <div class="media-image" id="hero-image" style="display:none;"></div>
+
+      <!-- AR pill (top-right) -->
+      <button class="ar-pill" type="button">
+        <span class="glyph">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M3 7l9-4 9 4M3 7v10l9 4M3 7l9 4m9-4l-9 4m9-4v10l-9 4m0-14v14" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        AR — View in your space
+      </button>
+
+      <!-- Video chrome -->
+      <div class="media-chrome" id="media-chrome">
+        <button class="play-btn" id="play-btn" aria-label="Play / pause">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+        </button>
+        <div class="scrub" id="scrub"><div class="scrub-fill" id="scrub-fill"></div></div>
+        <div class="time" id="time">0:00 / 0:08</div>
+        <button class="mute-btn" id="mute-btn" aria-label="Mute / unmute">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" id="mute-icon">
+            <path d="M4 9v6h4l5 4V5L8 9H4z" stroke-linejoin="round"/>
+            <path d="m17 9 5 6m0-6-5 6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Thumb strip -->
+    <div class="thumbs" id="thumbs">
+      <button class="thumb video-thumb is-active" data-type="video"
+              style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=80&auto=format&fit=crop');" aria-label="Mechanism video"></button>
+      <button class="thumb" data-type="image" data-src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=1600&q=85&auto=format&fit=crop"
+              style="background-image:url('https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=300&q=80&auto=format&fit=crop');" aria-label="Front view"></button>
+      <button class="thumb" data-type="image" data-src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1600&q=85&auto=format&fit=crop"
+              style="background-image:url('https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=300&q=80&auto=format&fit=crop');" aria-label="Three-quarter view"></button>
+      <button class="thumb" data-type="image" data-src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=1600&q=85&auto=format&fit=crop"
+              style="background-image:url('https://images.unsplash.com/photo-1556228720-195a672e8a03?w=300&q=80&auto=format&fit=crop');" aria-label="In context"></button>
+      <button class="thumb" data-type="image" data-src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1600&q=85&auto=format&fit=crop"
+              style="background-image:url('https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&q=80&auto=format&fit=crop');" aria-label="Exploded view"></button>
+      <button class="thumb" data-type="image" data-src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85&auto=format&fit=crop"
+              style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80&auto=format&fit=crop');" aria-label="Finish closeup"></button>
+    </div>
+  </div>
+
+  <!-- ===== Configurator ===== -->
+  <aside class="info">
+    <div class="kicker">— GLYDRA SOFT-CLOSE SYSTEM</div>
+    <h1>Glydra 550 Soft-Close</h1>
+    <p class="poetic">A ball-bearing slide engineered to vanish — 90&nbsp;mm of synchronised damping in under 1.4 seconds.</p>
+    <div class="code">
+      <span id="sku">EBC-GLY-550-40-SC</span>
+      <button class="copy" id="copy-sku" aria-label="Copy SKU">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h10" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Length -->
+    <div class="cfg-block">
+      <div class="lbl-row">
+        <span class="lbl">Length</span>
+        <span class="val"><strong id="length-val">550</strong> mm</span>
+      </div>
+      <div class="pill-row" data-cfg="length">
+        <button class="pill">350</button>
+        <button class="pill">400</button>
+        <button class="pill">450</button>
+        <button class="pill">500</button>
+        <button class="pill is-active">550</button>
+        <button class="pill">600</button>
+      </div>
+    </div>
+
+    <!-- Load -->
+    <div class="cfg-block">
+      <div class="lbl-row">
+        <span class="lbl">Load Rating</span>
+        <span class="val"><strong id="load-val">40</strong> kg</span>
+      </div>
+      <div class="pill-row" data-cfg="load">
+        <button class="pill">30 kg</button>
+        <button class="pill is-active">40 kg</button>
+        <button class="pill">45 kg</button>
+      </div>
+    </div>
+
+    <!-- Finish -->
+    <div class="cfg-block">
+      <div class="lbl-row">
+        <span class="lbl">Finish</span>
+        <span class="val"><strong id="finish-val">Zinc plated</strong></span>
+      </div>
+      <div class="swatch-row" data-cfg="finish">
+        <div class="swatch is-active" data-name="Zinc plated"
+             style="background-image: linear-gradient(135deg, #d8d8d8, #b8b8b8);"></div>
+        <div class="swatch" data-name="Brushed nickel"
+             style="background-image: linear-gradient(135deg, #b6b6b3, #8a8a82);"></div>
+        <div class="swatch" data-name="Satin chrome"
+             style="background-image: linear-gradient(135deg, #c8cbcd, #969a9c);"></div>
+        <div class="swatch" data-name="Matt black"
+             style="background-image: linear-gradient(135deg, #3a3a3a, #1f1f1f);"></div>
+        <div class="swatch" data-name="Black oxide"
+             style="background-image: linear-gradient(135deg, #1e1e1e, #050505);"></div>
+        <div class="swatch" data-name="Warm brass"
+             style="background-image: linear-gradient(135deg, #c19a5f, #8b6a35);"></div>
+      </div>
+    </div>
+
+    <!-- Mounting -->
+    <div class="cfg-block">
+      <div class="lbl-row">
+        <span class="lbl">Mounting</span>
+        <span class="val"><strong id="mount-val">Side mount</strong></span>
+      </div>
+      <div class="mount-row" data-cfg="mount">
+        <button class="mount-card is-active" data-name="Side mount">
+          <div class="icon">
+            <svg viewBox="0 0 80 56" width="64" height="44" fill="none" stroke="currentColor" stroke-width="1.4">
+              <rect x="6" y="6" width="68" height="44" rx="2"/>
+              <rect x="6" y="22" width="68" height="6" fill="currentColor" opacity="0.18" stroke="none"/>
+              <line x1="6" y1="32" x2="74" y2="32" stroke-dasharray="3 3" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="name">Side Mount</div>
+          <div class="sub">17 mm groove. Standard cabinet fit.</div>
+        </button>
+        <button class="mount-card" data-name="Under mount">
+          <div class="icon">
+            <svg viewBox="0 0 80 56" width="64" height="44" fill="none" stroke="currentColor" stroke-width="1.4">
+              <rect x="6" y="6" width="68" height="44" rx="2"/>
+              <rect x="14" y="42" width="52" height="6" fill="currentColor" opacity="0.18" stroke="none"/>
+              <line x1="6" y1="36" x2="74" y2="36" stroke-dasharray="3 3" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="name">Under Mount</div>
+          <div class="sub">Concealed below drawer box.</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Price -->
+    <div class="price-block">
+      <div class="price"><span id="price">₹ 1,840</span><span class="per">/ pair · ex GST</span></div>
+      <a href="#" class="trade-link">Trade price available — sign in →</a>
+    </div>
+
+    <!-- Qty + CTAs -->
+    <div class="qty-cta">
+      <div class="qty">
+        <button id="qty-down" aria-label="Decrease">−</button>
+        <input id="qty" value="1" type="text" inputmode="numeric" aria-label="Quantity" />
+        <button id="qty-up" aria-label="Increase">+</button>
+      </div>
+      <div class="cta-pair">
+        <button class="btn btn-primary" id="add-btn">Add to Project</button>
+        <button class="btn btn-outline-navy">Request Sample</button>
+      </div>
+    </div>
+
+    <!-- Trust -->
+    <div class="trust">
+      <div class="trust-item"><span class="check"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Ships in 3–5 days</div>
+      <div class="trust-item"><span class="check"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>10-year warranty</div>
+      <div class="trust-item"><span class="check"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>ISO 9001 certified</div>
+      <div class="trust-item"><span class="check"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg></span>80,000 cycle tested</div>
+    </div>
+  </aside>
+</section>
+
+<!-- =========== BELOW THE FOLD: SPECS =========== -->
+<section class="below" data-screen-label="02 Specifications">
+  <div class="below-inner">
+    <div class="below-head">
+      <div>
+        <div class="kicker">Reference document</div>
+        <h2>Specifications, drawn from the testing floor.</h2>
+      </div>
+      <div class="tabs">
+        <button class="tab is-active" data-tab="specs">Specifications</button>
+        <button class="tab" data-tab="dims">Dimensions</button>
+        <button class="tab" data-tab="dl">Downloads</button>
+      </div>
+    </div>
+
+    <!-- Tab: Specifications -->
+    <div class="tab-panel is-active" data-panel="specs">
+      <div class="spec-grid">
+        <div>
+          <div class="spec-row"><div class="k">Material</div><div class="v">Cold-rolled steel, hardened raceway</div></div>
+          <div class="spec-row"><div class="k">Closing action</div><div class="v">Soft-close, integrated damper</div></div>
+          <div class="spec-row"><div class="k">Extension</div><div class="v">Full extension, 100%</div></div>
+          <div class="spec-row"><div class="k">Mounting</div><div class="v">Side mount, 17 mm groove</div></div>
+          <div class="spec-row"><div class="k">Cycle life</div><div class="v">80,000 cycles (EN 15338 H3)</div></div>
+          <div class="spec-row"><div class="k">Adjustment</div><div class="v">3D — height ± 2 mm, side ± 1.5 mm</div></div>
+        </div>
+        <div>
+          <div class="spec-row"><div class="k">Length</div><div class="v">550 mm</div></div>
+          <div class="spec-row"><div class="k">Dynamic load</div><div class="v">40 kg / pair</div></div>
+          <div class="spec-row"><div class="k">Damping time</div><div class="v">1.2 – 1.4 seconds</div></div>
+          <div class="spec-row"><div class="k">Finish</div><div class="v">Zinc plated, RoHS compliant</div></div>
+          <div class="spec-row"><div class="k">Certifications</div><div class="v">BIFMA, BIS, RoHS, EN 15338</div></div>
+          <div class="spec-row"><div class="k">Country of origin</div><div class="v">Manufactured in Pune, India</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Dimensions -->
+    <div class="tab-panel" data-panel="dims">
+      <div class="dim-wrap">
+        <div class="dim-drawing">
+          <div class="dim-cap">FIG. 01 — Side mount, plan view</div>
+          <div class="dim-units">Units — mm</div>
+          <svg viewBox="0 0 600 280" aria-label="Technical drawing of Glydra 550 drawer slide">
+            <defs>
+              <pattern id="hatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45)">
+                <line x1="0" y1="0" x2="0" y2="4" stroke="#092853" stroke-width="0.5" opacity="0.18"/>
+              </pattern>
+            </defs>
+
+            <!-- Outer slide body (cabinet member) -->
+            <rect x="60" y="110" width="480" height="34" fill="#F9FAFC" stroke="#092853" stroke-width="1.2"/>
+            <!-- Inner profile (drawer member) -->
+            <rect x="60" y="118" width="480" height="18" fill="url(#hatch)" stroke="#092853" stroke-width="0.6" opacity="0.7"/>
+            <!-- Slot details -->
+            <line x1="100" y1="110" x2="100" y2="144" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 2" opacity="0.5"/>
+            <line x1="500" y1="110" x2="500" y2="144" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 2" opacity="0.5"/>
+            <!-- Mounting holes -->
+            <circle cx="95" cy="127" r="2" fill="none" stroke="#092853" stroke-width="0.6"/>
+            <circle cx="195" cy="127" r="2" fill="none" stroke="#092853" stroke-width="0.6"/>
+            <circle cx="295" cy="127" r="2" fill="none" stroke="#092853" stroke-width="0.6"/>
+            <circle cx="395" cy="127" r="2" fill="none" stroke="#092853" stroke-width="0.6"/>
+            <circle cx="495" cy="127" r="2" fill="none" stroke="#092853" stroke-width="0.6"/>
+
+            <!-- Length dimension (top) -->
+            <line x1="60" y1="70" x2="540" y2="70" stroke="#E87B1E" stroke-width="0.7"/>
+            <line x1="60" y1="65" x2="60" y2="110" stroke="#E87B1E" stroke-width="0.6" stroke-dasharray="2 3"/>
+            <line x1="540" y1="65" x2="540" y2="110" stroke="#E87B1E" stroke-width="0.6" stroke-dasharray="2 3"/>
+            <path d="M60,70 l5,-3 l0,6 z" fill="#E87B1E"/>
+            <path d="M540,70 l-5,-3 l0,6 z" fill="#E87B1E"/>
+            <rect x="275" y="58" width="54" height="22" fill="#F9FAFC" stroke="#E87B1E" stroke-width="0.5" rx="2"/>
+            <text id="dim-A" x="302" y="73" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#E87B1E">A = 550</text>
+
+            <!-- Width dimension (right) -->
+            <line x1="570" y1="110" x2="570" y2="144" stroke="#092853" stroke-width="0.6"/>
+            <line x1="540" y1="110" x2="575" y2="110" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 3"/>
+            <line x1="540" y1="144" x2="575" y2="144" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 3"/>
+            <path d="M570,110 l-3,5 l6,0 z" fill="#092853"/>
+            <path d="M570,144 l-3,-5 l6,0 z" fill="#092853"/>
+            <text x="580" y="131" font-family="Archivo, sans-serif" font-weight="600" font-size="10" fill="#092853">B = 45</text>
+
+            <!-- Mounting groove dimension (bottom) -->
+            <line x1="60" y1="185" x2="540" y2="185" stroke="#092853" stroke-width="0.5"/>
+            <line x1="60" y1="144" x2="60" y2="190" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 3"/>
+            <line x1="540" y1="144" x2="540" y2="190" stroke="#092853" stroke-width="0.4" stroke-dasharray="2 3"/>
+            <text x="300" y="200" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="10" fill="#5B5B5B">Mounting groove 17 — 5 fixing points</text>
+
+            <!-- Pitch dimension callouts (bottom) -->
+            <line x1="95" y1="220" x2="195" y2="220" stroke="#5B5B5B" stroke-width="0.5"/>
+            <line x1="195" y1="220" x2="295" y2="220" stroke="#5B5B5B" stroke-width="0.5"/>
+            <line x1="295" y1="220" x2="395" y2="220" stroke="#5B5B5B" stroke-width="0.5"/>
+            <line x1="395" y1="220" x2="495" y2="220" stroke="#5B5B5B" stroke-width="0.5"/>
+            <text x="145" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="9" fill="#5B5B5B">P = 100</text>
+            <text x="245" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="9" fill="#5B5B5B">100</text>
+            <text x="345" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="9" fill="#5B5B5B">100</text>
+            <text x="445" y="234" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="9" fill="#5B5B5B">100</text>
+
+            <!-- Drawer body indication (light, dashed) -->
+            <rect x="100" y="100" width="400" height="10" fill="none" stroke="#092853" stroke-width="0.4" stroke-dasharray="4 3" opacity="0.35"/>
+            <text x="300" y="96" text-anchor="middle" font-family="Archivo, sans-serif" font-weight="500" font-size="9" fill="#5B5B5B" opacity="0.6">DRAWER BOX (TYPICAL)</text>
+          </svg>
+        </div>
+
+        <div>
+          <table class="dim-table" id="dim-table">
+            <thead>
+              <tr>
+                <th>Length</th>
+                <th class="num">A (mm)</th>
+                <th class="num">B (mm)</th>
+                <th class="num">Travel (mm)</th>
+                <th class="num">Min cabinet</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-len="350"><td>350</td><td class="num">350</td><td class="num">45</td><td class="num">348</td><td class="num">364</td></tr>
+              <tr data-len="400"><td>400</td><td class="num">400</td><td class="num">45</td><td class="num">398</td><td class="num">414</td></tr>
+              <tr data-len="450"><td>450</td><td class="num">450</td><td class="num">45</td><td class="num">448</td><td class="num">464</td></tr>
+              <tr data-len="500"><td>500</td><td class="num">500</td><td class="num">45</td><td class="num">498</td><td class="num">514</td></tr>
+              <tr data-len="550" class="is-active"><td>550</td><td class="num">550</td><td class="num">45</td><td class="num">548</td><td class="num">564</td></tr>
+              <tr data-len="600"><td>600</td><td class="num">600</td><td class="num">45</td><td class="num">598</td><td class="num">614</td></tr>
+            </tbody>
+          </table>
+
+          <div class="dim-foot">
+            <p class="note">A = total slide length. B = profile width. Travel reflects full extension after mounting tolerance. All dimensions ± 0.5 mm.</p>
+            <a href="#" id="dim-dl">Download spec sheet →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Downloads -->
+    <div class="tab-panel" data-panel="dl">
+      <div class="dl-head">
+        <div class="ttl">8 resources · 22.4 MB total</div>
+        <button class="ctrl" id="dl-select-all">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download all
+        </button>
+      </div>
+
+      <div class="dl-grid">
+        <div class="dl-card t-pdf" data-name="Glydra 550 SC — Spec Sheet" data-size="1.2 MB">
+          <div class="ic">PDF</div>
+          <div>
+            <div class="name">Glydra 550 SC — Spec Sheet</div>
+            <div class="meta"><span>PDF</span><span class="dot"></span><span>1.2 MB</span><span class="dot"></span><span>3 pages</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download spec sheet">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-pdf" data-name="Installation Guide" data-size="3.4 MB">
+          <div class="ic">PDF</div>
+          <div>
+            <div class="name">Installation Guide</div>
+            <div class="meta"><span>PDF</span><span class="dot"></span><span>3.4 MB</span><span class="dot"></span><span>12 pages</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download install guide">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-dwg" data-name="2D CAD Drawing" data-size="412 KB">
+          <div class="ic">DWG</div>
+          <div>
+            <div class="name">2D CAD Drawing</div>
+            <div class="meta"><span>AutoCAD 2018</span><span class="dot"></span><span>412 KB</span><span class="dot"></span><span>All lengths</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download DWG">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-bim" data-name="Revit Family" data-size="8.6 MB">
+          <div class="ic">RFA</div>
+          <div>
+            <div class="name">Revit Family</div>
+            <div class="meta"><span>Revit 2024</span><span class="dot"></span><span>8.6 MB</span><span class="dot"></span><span>Parametric</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download Revit family">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-step" data-name="3D Model — STEP" data-size="6.1 MB">
+          <div class="ic">STEP</div>
+          <div>
+            <div class="name">3D Model — STEP</div>
+            <div class="meta"><span>STEP AP214</span><span class="dot"></span><span>6.1 MB</span><span class="dot"></span><span>SolidWorks, Inventor</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download STEP">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-pdf" data-name="Test Certificate — EN 15338" data-size="680 KB">
+          <div class="ic">PDF</div>
+          <div>
+            <div class="name">Test Certificate — EN 15338</div>
+            <div class="meta"><span>PDF</span><span class="dot"></span><span>680 KB</span><span class="dot"></span><span>Issued Mar 2026</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download certificate">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-img" data-name="Product Photography Pack" data-size="18.2 MB">
+          <div class="ic">ZIP</div>
+          <div>
+            <div class="name">Product Photography Pack</div>
+            <div class="meta"><span>ZIP</span><span class="dot"></span><span>18.2 MB</span><span class="dot"></span><span>12 hi-res images</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download photo pack">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+
+        <div class="dl-card t-pdf" data-name="Warranty Document" data-size="220 KB">
+          <div class="ic">PDF</div>
+          <div>
+            <div class="name">Warranty Document</div>
+            <div class="meta"><span>PDF</span><span class="dot"></span><span>220 KB</span><span class="dot"></span><span>10-year cover</span></div>
+          </div>
+          <button class="dl-btn" aria-label="Download warranty">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="dl-progress"></div>
+        </div>
+      </div>
+
+      <div class="dl-bulk">
+        <div class="bulk-text">
+          For complete project documentation, request the full <strong>Glydra Engineering Pack</strong> — includes editable BIM source, photometric data (where applicable), and supplier letterhead.
+        </div>
+        <a href="#" class="btn btn-outline-navy">Request engineering pack</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========== RELATED =========== -->
+<section class="related">
+  <div class="related-inner">
+    <div class="related-head">
+      <h3>Specified alongside.</h3>
+      <a href="PLP - Drawer Slides.html" class="link-orange">View all slides →</a>
+    </div>
+    <div class="related-grid">
+      <a href="#" class="rcard">
+        <div class="media"><img src="https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="body">
+          <div class="sys">Glydra</div>
+          <div class="n">Glydra 450 SC</div>
+          <div class="s">450 mm · 30 kg · Soft-close</div>
+        </div>
+      </a>
+      <a href="#" class="rcard">
+        <div class="media"><img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="body">
+          <div class="sys">Quadro</div>
+          <div class="n">Quadro V6 500</div>
+          <div class="s">500 mm · 45 kg · Tip-on</div>
+        </div>
+      </a>
+      <a href="#" class="rcard">
+        <div class="media"><img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="body">
+          <div class="sys">Tandem</div>
+          <div class="n">Tandem Box</div>
+          <div class="s">450 mm · 30 kg · Soft-close</div>
+        </div>
+      </a>
+      <a href="#" class="rcard">
+        <div class="media"><img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80&auto=format&fit=crop" alt="" /></div>
+        <div class="body">
+          <div class="sys">Undermount</div>
+          <div class="n">Undermount Lyra</div>
+          <div class="s">500 mm · 40 kg · Soft-close</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ============ Tabs (Specifications / Dimensions / Downloads) ============
+  const tabBtns = document.querySelectorAll('.below-head .tab');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      const target = b.dataset.tab;
+      tabBtns.forEach(x => x.classList.toggle('is-active', x === b));
+      tabPanels.forEach(p => p.classList.toggle('is-active', p.dataset.panel === target));
+      // keep section in view
+      b.closest('.below').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Dimensions table — click row → update SVG callout
+  const dimTable = document.getElementById('dim-table');
+  if (dimTable) {
+    dimTable.querySelectorAll('tbody tr').forEach(r => {
+      r.addEventListener('click', () => {
+        dimTable.querySelectorAll('tbody tr').forEach(x => x.classList.remove('is-active'));
+        r.classList.add('is-active');
+        const len = r.dataset.len;
+        const a = document.getElementById('dim-A');
+        if (a) a.textContent = `A = ${len}`;
+      });
+    });
+  }
+
+  // Sync dim-table row to the active length pill in the configurator
+  document.querySelectorAll('[data-cfg="length"] .pill').forEach(p => {
+    p.addEventListener('click', () => {
+      const len = p.textContent.trim();
+      if (!dimTable) return;
+      dimTable.querySelectorAll('tbody tr').forEach(r => r.classList.remove('is-active'));
+      const row = dimTable.querySelector(`tbody tr[data-len="${len}"]`);
+      if (row) row.classList.add('is-active');
+      const a = document.getElementById('dim-A');
+      if (a) a.textContent = `A = ${len}`;
+    });
+  });
+
+  // Downloads — single card download (simulated progress) + dl-all
+  function downloadCard(card) {
+    if (card.classList.contains('is-downloading') || card.dataset.done === '1') return;
+    card.classList.add('is-downloading');
+    setTimeout(() => {
+      card.classList.remove('is-downloading');
+      card.dataset.done = '1';
+      const btn = card.querySelector('.dl-btn');
+      btn.classList.add('is-done');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 12 4 4 10-10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      // simulate file download trigger
+      const name = card.dataset.name || 'file';
+      try {
+        const a = document.createElement('a');
+        const blob = new Blob([`Ebco — ${name}\n\nThis is a demo file. Production would deliver the real asset.`], { type: 'text/plain' });
+        a.href = URL.createObjectURL(blob);
+        a.download = name.replace(/[^\w\d\-]+/g, '_') + '.txt';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (e) {}
+    }, 1300);
+  }
+  document.querySelectorAll('.dl-card').forEach(c => {
+    c.addEventListener('click', () => downloadCard(c));
+  });
+  const dlAll = document.getElementById('dl-select-all');
+  if (dlAll) {
+    dlAll.addEventListener('click', () => {
+      document.querySelectorAll('.dl-card').forEach((c, i) => setTimeout(() => downloadCard(c), i * 180));
+    });
+  }
+
+  // Inline "Download spec sheet →" link in Dimensions footer → opens Downloads tab + auto-downloads spec
+  const dimDl = document.getElementById('dim-dl');
+  if (dimDl) {
+    dimDl.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector('.below-head .tab[data-tab="dl"]').click();
+      setTimeout(() => {
+        const spec = document.querySelector('.dl-card[data-name="Glydra 550 SC — Spec Sheet"]');
+        if (spec) spec.click();
+      }, 400);
+    });
+  }
+
+  // ============ Read product context from URL (mega-menu → PDP) ============
+  (function applyProductContext() {
+    const p = new URLSearchParams(window.location.search);
+    if (![...p.keys()].length) return;
+
+    const name    = p.get('name');
+    const kicker  = p.get('kicker');
+    const meta    = p.get('meta');
+    const sku     = p.get('sku');
+    const cat     = p.get('cat');     // category (e.g. "Drawer Systems")
+    const sub     = p.get('sub');     // subcategory (e.g. "Glydra")
+    const price   = p.get('price');
+
+    if (name) {
+      document.querySelector('.info h1').textContent = name;
+      document.title = name + ' — Ebco';
+    }
+    if (kicker) {
+      const k = document.querySelector('.info .kicker');
+      if (k) k.textContent = '— ' + kicker.toUpperCase();
+    }
+    if (meta) {
+      const poetic = document.querySelector('.info .poetic');
+      if (poetic) poetic.textContent = meta;
+    }
+    if (sku) {
+      const skuEl = document.getElementById('sku');
+      if (skuEl) skuEl.textContent = sku;
+    }
+    if (price) {
+      const pr = document.getElementById('price');
+      if (pr) pr.textContent = price;
+    }
+    // Breadcrumb update
+    if (cat || sub) {
+      const crumb = document.querySelector('.pdp-crumb');
+      if (crumb && name) {
+        const home = '<a href="Homepage 1B.html">Home</a><span class="sep">→</span>';
+        const sys  = '<a href="PLP - Power User.html">Systems</a><span class="sep">→</span>';
+        const catSeg = cat ? `<a href="PLP - Power User.html">${cat}</a><span class="sep">→</span>` : '';
+        const subSeg = sub && sub !== cat ? `<a href="PLP - Power User.html">${sub}</a><span class="sep">→</span>` : '';
+        crumb.innerHTML = home + sys + catSeg + subSeg + `<span class="current">${name}</span>`;
+      }
+    }
+  })();
+  const state = {
+    length: 550,
+    load: 40,
+    finish: 'Zinc plated',
+    mount: 'Side mount',
+    qty: 1,
+  };
+
+  const PRICE_BASE = 1840;
+  function updateState() {
+    // SKU update
+    const finishCode = ({ 'Zinc plated':'ZN', 'Brushed nickel':'BN', 'Satin chrome':'SC', 'Matt black':'MB', 'Black oxide':'BO', 'Warm brass':'WB' })[state.finish] || 'ZN';
+    const mountCode = state.mount === 'Side mount' ? 'SC' : 'UM';
+    document.getElementById('sku').textContent = `EBC-GLY-${state.length}-${state.load}-${finishCode}${mountCode==='UM'?'-UM':''}`;
+    document.getElementById('length-val').textContent = state.length;
+    document.getElementById('load-val').textContent = state.load;
+    document.getElementById('finish-val').textContent = state.finish;
+    document.getElementById('mount-val').textContent = state.mount;
+    // Price (mock formula)
+    const lengthMult = state.length / 550;
+    const loadMult = state.load === 30 ? 0.85 : state.load === 45 ? 1.18 : 1;
+    const finishMult = ({ 'Zinc plated':1, 'Brushed nickel':1.18, 'Satin chrome':1.12, 'Matt black':1.22, 'Black oxide':1.32, 'Warm brass':1.45 })[state.finish] || 1;
+    const mountMult = state.mount === 'Under mount' ? 1.35 : 1;
+    const newPrice = Math.round(PRICE_BASE * lengthMult * loadMult * finishMult * mountMult);
+    document.getElementById('price').textContent = '₹ ' + newPrice.toLocaleString('en-IN');
+  }
+
+  // Pill rows
+  document.querySelectorAll('.pill-row').forEach(row => {
+    row.addEventListener('click', e => {
+      const btn = e.target.closest('.pill');
+      if (!btn) return;
+      row.querySelectorAll('.pill').forEach(p => p.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      const cfg = row.dataset.cfg;
+      const v = parseInt(btn.textContent, 10);
+      state[cfg] = v;
+      updateState();
+    });
+  });
+
+  // Swatches
+  document.querySelector('[data-cfg="finish"]').addEventListener('click', e => {
+    const sw = e.target.closest('.swatch');
+    if (!sw) return;
+    document.querySelectorAll('[data-cfg="finish"] .swatch').forEach(s => s.classList.remove('is-active'));
+    sw.classList.add('is-active');
+    state.finish = sw.dataset.name;
+    updateState();
+  });
+
+  // Mount cards
+  document.querySelector('[data-cfg="mount"]').addEventListener('click', e => {
+    const c = e.target.closest('.mount-card');
+    if (!c) return;
+    document.querySelectorAll('[data-cfg="mount"] .mount-card').forEach(x => x.classList.remove('is-active'));
+    c.classList.add('is-active');
+    state.mount = c.dataset.name;
+    updateState();
+  });
+
+  // Qty stepper
+  document.getElementById('qty-down').addEventListener('click', () => {
+    state.qty = Math.max(1, state.qty - 1);
+    document.getElementById('qty').value = state.qty;
+  });
+  document.getElementById('qty-up').addEventListener('click', () => {
+    state.qty = Math.min(999, state.qty + 1);
+    document.getElementById('qty').value = state.qty;
+  });
+  document.getElementById('qty').addEventListener('input', e => {
+    const v = parseInt(e.target.value, 10) || 1;
+    state.qty = Math.max(1, Math.min(999, v));
+  });
+
+  // Add to project — temporary success state
+  document.getElementById('add-btn').addEventListener('click', e => {
+    const btn = e.currentTarget;
+    const o = btn.textContent;
+    btn.textContent = '✓ Added';
+    btn.style.background = '#1F8A5B';
+    setTimeout(() => { btn.textContent = o; btn.style.background = ''; }, 1800);
+  });
+
+  // Copy SKU
+  document.getElementById('copy-sku').addEventListener('click', () => {
+    const sku = document.getElementById('sku').textContent;
+    if (navigator.clipboard) navigator.clipboard.writeText(sku);
+    const orig = document.getElementById('sku').textContent;
+    document.getElementById('sku').textContent = 'Copied ✓';
+    setTimeout(() => document.getElementById('sku').textContent = orig, 1200);
+  });
+
+  // ============ Thumb / media swap ============
+  const frame = document.getElementById('frame');
+  const video = document.getElementById('hero-video');
+  const heroImg = document.getElementById('hero-image');
+  const thumbs = document.querySelectorAll('.thumb');
+
+  thumbs.forEach(t => {
+    t.addEventListener('click', () => {
+      thumbs.forEach(x => x.classList.remove('is-active'));
+      t.classList.add('is-active');
+      if (t.dataset.type === 'video') {
+        frame.classList.remove('is-image');
+        video.style.display = 'block';
+        heroImg.style.display = 'none';
+        video.play().catch(()=>{});
+      } else {
+        frame.classList.add('is-image');
+        video.pause();
+        video.style.display = 'none';
+        heroImg.style.display = 'block';
+        heroImg.style.backgroundImage = `url('${t.dataset.src}')`;
+      }
+    });
+  });
+
+  // ============ Video chrome ============
+  const playBtn = document.getElementById('play-btn');
+  const playIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  const pauseIcon = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+  playBtn.innerHTML = pauseIcon;
+  playBtn.addEventListener('click', () => {
+    if (video.paused) { video.play(); playBtn.innerHTML = pauseIcon; }
+    else { video.pause(); playBtn.innerHTML = playIcon; }
+  });
+
+  const muteBtn = document.getElementById('mute-btn');
+  const muteIcon = document.getElementById('mute-icon');
+  const onIconPath = '<path d="M4 9v6h4l5 4V5L8 9H4z" stroke-linejoin="round"/><path d="M16 8.5c1.4 1 1.4 6 0 7M18.5 6c2.8 2 2.8 10 0 12" stroke-linecap="round"/>';
+  const offIconPath = '<path d="M4 9v6h4l5 4V5L8 9H4z" stroke-linejoin="round"/><path d="m17 9 5 6m0-6-5 6" stroke-linecap="round"/>';
+  muteBtn.addEventListener('click', () => {
+    video.muted = !video.muted;
+    muteIcon.innerHTML = video.muted ? offIconPath : onIconPath;
+  });
+
+  // Scrub + time
+  const scrub = document.getElementById('scrub');
+  const scrubFill = document.getElementById('scrub-fill');
+  const timeEl = document.getElementById('time');
+  function fmt(t) {
+    if (!isFinite(t)) return '0:00';
+    const m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return `${m}:${s.toString().padStart(2,'0')}`;
+  }
+  video.addEventListener('timeupdate', () => {
+    if (!video.duration) return;
+    scrubFill.style.width = (video.currentTime / video.duration * 100) + '%';
+    timeEl.textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
+  });
+  scrub.addEventListener('click', e => {
+    if (!video.duration) return;
+    const rect = scrub.getBoundingClientRect();
+    const p = (e.clientX - rect.left) / rect.width;
+    video.currentTime = p * video.duration;
+  });
+</script>
+
+</body>
+</html>
