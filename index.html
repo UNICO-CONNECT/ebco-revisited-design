@@ -93,6 +93,246 @@
   .link-orange .arr { display: inline-block; transition: transform 200ms; }
   .link-orange:hover .arr { transform: translateX(4px); }
 
+  /* ===== Intro hero (premium editorial split-screen) ===== */
+  section.intro {
+    /* Section-local refined palette — terracotta accent + warm off-white,
+       overrides Ebco's bright orange just for this band */
+    --terracotta: #B86E4F;
+    --terracotta-deep: #9A5A40;
+    --bone: #F7F2EA;
+    --bone-line: #E5DDD0;
+    --ink: #0C1E3A;
+
+    /* Full viewport minus sticky nav (56px) */
+    height: calc(100vh - 56px);
+    min-height: 680px;
+    background: var(--bone);
+    display: flex; flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  /* Subtle film grain on the whole section for editorial feel */
+  section.intro::after {
+    content: ''; position: absolute; inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(rgba(12,30,58,0.02) 1px, transparent 1px);
+    background-size: 3px 3px;
+    mix-blend-mode: multiply;
+    z-index: 1;
+  }
+
+  .intro-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    width: 100%;
+    flex: 1;
+    align-items: stretch;
+    position: relative;
+    z-index: 2;
+    min-height: 0;
+  }
+
+  /* ===== LEFT: cinematic photograph (edge-to-edge, no margin) ===== */
+  .intro-img {
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+  }
+  .intro-img video {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    z-index: 0;
+  }
+  /* Warm cinematic wash + gentle vignette */
+  .intro-img::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 80% at 50% 60%, transparent 40%, rgba(12,18,40,0.35) 100%),
+      linear-gradient(180deg, rgba(60,30,15,0.18) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0) 60%, rgba(12,18,40,0.35) 100%);
+  }
+  /* Editorial frame label, lower-left */
+  .intro-img-label {
+    position: absolute; left: 28px; bottom: 28px;
+    color: var(--bone);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 14px;
+    z-index: 2;
+  }
+  .intro-img-label::before {
+    content: ''; width: 32px; height: 1px; background: var(--bone); opacity: 0.7;
+  }
+  .intro-img-label .figno { color: var(--terracotta); }
+
+  /* Pagination indicator, upper-left over photo */
+  .intro-paginate {
+    position: absolute; left: 28px; top: 28px;
+    color: var(--bone);
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    z-index: 2;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .intro-paginate .now { color: var(--terracotta); font-weight: 700; font-size: 13px; }
+  .intro-paginate .div { opacity: 0.45; }
+
+  /* ===== RIGHT: copy stack with ample negative space ===== */
+  .intro-copy {
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+    padding: 64px 88px;
+    position: relative;
+  }
+  .intro-copy-top {
+    align-self: start;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .intro-copy-top .eyebrow {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--terracotta);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .intro-copy-top .eyebrow::before {
+    content: ''; width: 34px; height: 1px; background: var(--terracotta);
+  }
+  .intro-copy-top .est {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: rgba(12,30,58,0.45);
+  }
+
+  .intro-copy-middle { align-self: center; }
+  .intro-copy-middle h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(48px, 5.8vw, 96px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin: 0 0 36px;
+    text-wrap: balance;
+  }
+  .intro-copy-middle h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--terracotta);
+    font-family: 'Manrope', serif;
+    letter-spacing: -0.02em;
+  }
+  .intro-copy-middle .lede {
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 18px; line-height: 1.65;
+    color: rgba(12,30,58,0.7);
+    margin-bottom: 52px;
+    max-width: 44ch;
+  }
+
+  .intro-actions {
+    display: flex; align-items: center; gap: 36px; flex-wrap: wrap;
+  }
+  .intro-actions .ia-primary {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--bone);
+    background: var(--ink);
+    padding: 18px 32px;
+    display: inline-flex; align-items: center; gap: 18px;
+    border-radius: 50px;
+    transition: all 280ms cubic-bezier(0.16,1,0.3,1);
+    border: 1px solid var(--ink);
+  }
+  .intro-actions .ia-primary:hover {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    gap: 22px;
+  }
+  .intro-actions .ia-primary .arr {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--bone); color: var(--ink);
+    transition: transform 240ms;
+  }
+  .intro-actions .ia-primary:hover .arr { transform: translateX(2px); color: var(--terracotta); }
+  .intro-actions .ia-secondary {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink);
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--ink);
+    transition: color 200ms, border-color 200ms, gap 220ms;
+  }
+  .intro-actions .ia-secondary:hover {
+    color: var(--terracotta); border-color: var(--terracotta);
+    gap: 14px;
+  }
+
+  .intro-copy-bot {
+    align-self: end;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    gap: 32px;
+    padding-top: 28px;
+    border-top: 1px solid var(--bone-line);
+  }
+  .intro-meta {
+    display: flex; gap: 44px;
+  }
+  .intro-meta .m {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .intro-meta .m .v {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 28px; letter-spacing: -0.02em;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .intro-meta .m .v .acc { color: var(--terracotta); font-size: 0.6em; font-weight: 600; vertical-align: 4px; margin-left: 2px; }
+  .intro-meta .m .l {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(12,30,58,0.5);
+  }
+  .intro-tagline {
+    font-family: var(--font-body); font-style: italic; font-weight: 300;
+    font-size: 12px; color: rgba(12,30,58,0.55);
+    text-align: right;
+    letter-spacing: 0.04em;
+    max-width: 22ch;
+    line-height: 1.5;
+  }
+
+  /* Side wordmark on the very right edge — editorial detail */
+  .intro-side {
+    position: absolute; right: 18px; top: 50%;
+    transform: translateY(-50%) rotate(180deg);
+    writing-mode: vertical-rl;
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: rgba(12,30,58,0.32);
+    z-index: 3;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .intro-copy { padding: 56px 56px; }
+    .intro-meta { gap: 28px; }
+    .intro-meta .m .v { font-size: 22px; }
+  }
+  @media (max-width: 900px) {
+    section.intro { height: auto; min-height: auto; }
+    .intro-grid { grid-template-columns: 1fr; }
+    .intro-img { aspect-ratio: 4 / 3; min-height: 360px; }
+    .intro-copy { padding: 48px 28px 56px; grid-template-rows: auto auto auto; gap: 36px; }
+    .intro-copy-bot { flex-direction: column; align-items: flex-start; }
+    .intro-tagline { text-align: left; }
+    .intro-side { display: none; }
+  }
+
   /* ===== Nav ===== */
   .nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 50;
@@ -175,6 +415,14 @@
     z-index: 40;
     display: flex; flex-direction: column;
     gap: 22px;
+    /* Hidden until user scrolls past the intro section */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 360ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .rail.is-visible {
+    opacity: 1;
+    pointer-events: auto;
   }
   .rail-item {
     display: flex; align-items: center; gap: 14px;
@@ -579,6 +827,61 @@
 
 <main>
 
+<!-- ============ 00. INTRO — PREMIUM EDITORIAL ============ -->
+<section class="intro" id="sec-intro" data-screen-label="00 Intro">
+  <div class="intro-grid">
+
+    <!-- LEFT: cinematic lifestyle video -->
+    <div class="intro-img" aria-hidden="true">
+      <video
+        autoplay muted loop playsinline preload="auto"
+        poster="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=2000&q=90&auto=format&fit=crop"
+      >
+        <source src="https://dashboard.ebco.in/wp-content/uploads/2026/04/ebco-banners_1920x720px-1sec-02.mp4" type="video/mp4" />
+      </video>
+      <div class="intro-paginate"><span class="now">00</span><span class="div">/</span><span>07</span></div>
+      <div class="intro-img-label">
+        <span><span class="figno">Fig. 00</span> — An interior, considered to the millimetre.</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: editorial copy stack -->
+    <div class="intro-copy">
+      <div class="intro-copy-top">
+        <div class="eyebrow">EBCO · ENGINEERED IN PUNE</div>
+        <div class="est">Established 1979</div>
+      </div>
+
+      <div class="intro-copy-middle">
+        <h1>Hardware,<br/>refined to <em>silence.</em></h1>
+        <p class="lede">Drawer slides, hinges, kitchen systems and lighting — specified by architects across nine countries, engineered for the spaces where every millimetre is noticed.</p>
+        <div class="intro-actions">
+          <a href="PLP - Power User.html" class="ia-primary">
+            Explore the systems
+            <span class="arr">
+              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M14 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </a>
+          <a href="Find a Centre.html" class="ia-secondary">
+            Visit a Discovery Centre
+          </a>
+        </div>
+      </div>
+
+      <div class="intro-copy-bot">
+        <div class="intro-meta">
+          <div class="m"><span class="v">47<span class="acc">yrs</span></span><span class="l">In motion</span></div>
+          <div class="m"><span class="v">2,400<span class="acc">+</span></span><span class="l">Active SKUs</span></div>
+          <div class="m"><span class="v">9</span><span class="l">Centres</span></div>
+        </div>
+        <div class="intro-tagline">Precision. Perfection. Passion.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="intro-side">PRECISION — PERFECTION — PASSION</div>
+</section>
+
 <!-- ============ 01. HERO / DRAWER SYSTEMS ============ -->
 <section class="spec hero" id="sec-1" data-screen-label="01 Drawer Systems">
   <div class="grid12 sys-row sys-image-left">
@@ -834,6 +1137,8 @@
   // Section rail — track current section via IntersectionObserver
   (function(){
     var items = document.querySelectorAll('.rail-item');
+    var rail  = document.getElementById('rail');
+    var intro = document.getElementById('sec-intro');
     var sections = ['sec-1','sec-2','sec-3','sec-4','sec-5','sec-6','sec-7']
       .map(function(id){ return document.getElementById(id); }).filter(Boolean);
 
@@ -852,9 +1157,19 @@
       });
     });
 
-    // IntersectionObserver
+    // Rail visibility — only show once the intro is out of view
+    if (intro && rail) {
+      var visObserver = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          // Show rail when intro has scrolled out (less than 15% visible)
+          rail.classList.toggle('is-visible', e.intersectionRatio < 0.15);
+        });
+      }, { threshold: [0, 0.15, 0.3, 0.6, 1] });
+      visObserver.observe(intro);
+    }
+
+    // Active section observer
     var io = new IntersectionObserver(function(entries){
-      // Pick the entry with highest intersection ratio above a threshold
       var best = null;
       entries.forEach(function(e){
         if (e.isIntersecting && (!best || e.intersectionRatio > best.intersectionRatio)) {
